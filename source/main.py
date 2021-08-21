@@ -8,7 +8,7 @@ def main():
     phys_client = pb.connect(pb.GUI)
     pb.setAdditionalSearchPath(pybullet_data.getDataPath())
 
-    pb.loadURDF("r2d2.urdf")
+    pb.loadURDF("plane.urdf")
 
     for i in range(10000):
         pb.stepSimulation()
