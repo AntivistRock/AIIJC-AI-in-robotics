@@ -1,20 +1,42 @@
 import pybullet as pb
-import pybullet_data
-
 import time
+
+import engine
+
+
+class MySimulation (engine.Simulation):
+
+    def load(self):
+
+        pb.setGravity(0, 0, -9.8)
+
+        # ball
+
+        ball_col_shape = pb.createCollisionShape(pb.GEOM_SPHERE, radius=0.2)
+        ball_visual_shape = pb.createVisualShape(pb.GEOM_SPHERE, radius=0.2,
+                                                 rgbaColor=[0.25, 0.75, 0.25, 1])
+
+        pb_ball = pb.createMultiBody(1, ball_col_shape, ball_visual_shape, [0, 0, 10], [0, 0, 0, 1])
+
+        # plane
+
+        floor_col_shape = pb.createCollisionShape(pb.GEOM_PLANE)
+        floor_visual_shape = pb.createVisualShape(pb.GEOM_BOX,
+                                                  halfExtents=[100, 100, 0.0001], rgbaColor=[1, 1, .98, 1])
+
+        pb_floor = pb.createMultiBody(0, floor_col_shape, floor_visual_shape, [0, 0, 0], [0, 0, 0, 1])
 
 
 def main():
-    phys_client = pb.connect(pb.GUI)
-    pb.setAdditionalSearchPath(pybullet_data.getDataPath())
 
-    pb.loadURDF("plane.urdf")
+    env = engine.Environment()
+    my_sim = MySimulation()
 
-    for i in range(10000):
-        pb.stepSimulation()
-        time.sleep(1./240.)
+    env.set_simulation(my_sim)
 
-    pb.disconnect(phys_client)
+    for i in range(1000):
+        env.step()
+        time.sleep(1./100.)
 
 
 if __name__ == "__main__":
