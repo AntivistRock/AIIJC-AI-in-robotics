@@ -1,2 +1,2 @@
 from .environment import Environment
-from .environment import Simulation
+from .simulation import Simulation
