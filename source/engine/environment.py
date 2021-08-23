@@ -1,7 +1,7 @@
 import pybullet as pb
 
 from .pybullet_client import PyBulletClient
-from .simulation import Simulation, EmptySimulation
+from .res.simulation import Simulation, EmptySimulation
 
 
 class Environment (object):
