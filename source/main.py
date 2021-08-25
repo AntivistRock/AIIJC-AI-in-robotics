@@ -19,18 +19,18 @@ class MySimulation(engine.res.Simulation):
 
         self.kettle.load()
         self.robot.load()
+        
+        pb.setAdditionalSearchPath(pybullet_data.getDataPath())
+        pb.loadURDF("plane.urdf")
+
+        vm_data = engine.ViewMatrix.ViewMatrixData([0, 0, 1], 5, 2)
+        pm_data = engine.ProjMatrix.ProjMatrixData(0.01, 20)
+
+        self.camera = engine.Camera(320, 200, vm_data, pm_data)
 
     def _upload(self):
         self.kettle.upload()
         self.robot.upload()
-
-        pb.setAdditionalSearchPath(pybullet_data.getDataPath())
-        pb.loadURDF("plane.urdf")
-
-        vm_data = engine.ViewMatrix.ViewMatrixData([0, 0, 5], 10, 2)
-        pm_data = engine.ProjMatrix.ProjMatrixData(0.01, 20)
-
-        self.camera = engine.Camera(200, 200, vm_data, pm_data)
 
     def _update(self):
         ax = np.random.choice([0, 1, 2])
@@ -45,6 +45,7 @@ class MySimulation(engine.res.Simulation):
         plt.imshow(self.camera.snapshot())
         
         sleep(2)
+
 
 def main():
     env = engine.Environment()
