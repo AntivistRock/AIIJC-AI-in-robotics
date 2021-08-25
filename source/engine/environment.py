@@ -6,8 +6,8 @@ from .res.simulation import Simulation, EmptySimulation
 
 class Environment (object):
 
-    def __init__(self):
-        self.pb_client = PyBulletClient(pb.GUI)
+    def __init__(self, connection_type):
+        self.pb_client = PyBulletClient(connection_type)
         self.simulation = EmptySimulation()
 
     def update(self):
