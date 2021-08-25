@@ -4,7 +4,8 @@ class Resource (object):
         self._is_load = False
 
     def __del__(self):
-        self.upload()
+        if self._is_load:
+            self.upload()
 
     def load(self):
         self._load()
