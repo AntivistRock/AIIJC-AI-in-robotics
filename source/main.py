@@ -32,6 +32,10 @@ class MySimulation(engine.res.Simulation):
         self.kettle.upload()
         self.robot.upload()
 
+    def _upload(self):
+        self.kettle.upload()
+        self.robot.upload()
+
     def _update(self):
         ax = np.random.choice([0, 1, 2])
         add = np.random.choice([0.1, 0.2, 0.3, -0.1, -0.2, -0.3])
