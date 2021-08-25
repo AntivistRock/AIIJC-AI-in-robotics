@@ -1,12 +1,22 @@
 import pybullet as pb
 
-from source import engine
+from source import engine, models
 
 
 class MySimulation(engine.res.Simulation):
 
+    kettle = models.KettleLoader()
+    robot = models.RobotLoader()
+
     def _load(self):
         pb.setGravity(0, 0, -9.8)
+
+        self.kettle.load()
+        self.robot.load()
+
+    def _upload(self):
+        self.kettle.upload()
+        self.robot.upload()
 
     def _update(self):
         pass
