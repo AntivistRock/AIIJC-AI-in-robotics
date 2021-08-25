@@ -12,13 +12,13 @@ class Simulation(Resource):
         self.load()
 
     def _load(self):
-        raise NotImplementedError("Simulation object must implement method 'Simulation._load()'")
+        raise NotImplementedError("Simulation must be implemented method 'Simulation._load()'")
 
     def _upload(self):
         pass
 
     def _update(self):
-        raise NotImplementedError("Simulation object must implement method 'Simulation._update()'")
+        raise NotImplementedError("Simulation must be implemented method 'Simulation._update()'")
 
 
 class EmptySimulation(Simulation):
