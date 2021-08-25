@@ -19,11 +19,7 @@ class MySimulation(engine.res.Simulation):
 
         self.kettle.load()
         self.robot.load()
-
-    def _upload(self):
-        self.kettle.upload()
-        self.robot.upload()
-
+        
         pb.setAdditionalSearchPath(pybullet_data.getDataPath())
         pb.loadURDF("plane.urdf")
 
@@ -31,6 +27,10 @@ class MySimulation(engine.res.Simulation):
         pm_data = engine.ProjMatrix.ProjMatrixData(0.01, 20)
 
         self.camera = engine.Camera(200, 200, vm_data, pm_data)
+
+    def _upload(self):
+        self.kettle.upload()
+        self.robot.upload()
 
     def _update(self):
         ax = np.random.choice([0, 1, 2])
