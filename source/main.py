@@ -1,20 +1,24 @@
 import pybullet as pb
-import pybullet_data
 
-import time
+from source import engine
+
+
+class MySimulation(engine.res.Simulation):
+
+    def _load(self):
+        pb.setGravity(0, 0, -9.8)
+
+    def _update(self):
+        pass
 
 
 def main():
-    phys_client = pb.connect(pb.GUI)
-    pb.setAdditionalSearchPath(pybullet_data.getDataPath())
 
-    pb.loadURDF("plane.urdf")
+    env = engine.Environment()
+    env.set_simulation(MySimulation())
 
     for i in range(10000):
-        pb.stepSimulation()
-        time.sleep(1./240.)
-
-    pb.disconnect(phys_client)
+        env.update()
 
 
 if __name__ == "__main__":
