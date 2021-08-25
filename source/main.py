@@ -1,8 +1,20 @@
+<<<<<<< Updated upstream
 import pybullet as pb
 import pybullet_data
+=======
+from decorators import add_timer
+from engine import Environment, EnvThreadPool
+from my_simulation import MySimulation
 
-from matplotlib import pyplot as plt
+>>>>>>> Stashed changes
 
+@add_timer
+def test_1():
+    env = Environment(simulation=MySimulation())
+    for i in range(10):
+        env.run()
+
+<<<<<<< Updated upstream
 from source import engine
 
 
@@ -29,6 +41,18 @@ def main():
 
     for i in range(10000):
         env.update()
+=======
+
+@add_timer
+def test_2():
+    env_pool = EnvThreadPool(lambda: MySimulation(), 10)
+    env_pool.interact()
+
+
+def main():
+    test_1()
+    test_2()
+>>>>>>> Stashed changes
 
 
 if __name__ == "__main__":

@@ -16,9 +16,11 @@ class Resource (object):
 
     def update(self):
         if not self._is_load:
-            raise RuntimeError("Resource is upload")
+            self.load()
 
         self._update()
+
+    # TODO: write decorator from NotImplementedError
 
     def _load(self):
         raise NotImplementedError()
