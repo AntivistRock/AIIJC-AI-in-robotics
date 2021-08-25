@@ -1,4 +1,4 @@
-from source.engine.res import Loader
+from engine.res import Loader
 
 
 class Kettle(Loader):
