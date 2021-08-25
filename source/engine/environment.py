@@ -6,11 +6,6 @@ from .res.simulation import Simulation, EmptySimulation
 
 class Environment (object):
 
-<<<<<<< Updated upstream
-    def __init__(self):
-        self.pb_client = PyBulletClient(pb.GUI)
-        self.simulation = EmptySimulation()
-=======
     def __init__(self, connection_type=pb.DIRECT, simulation=EmptySimulation()):
         self.pb_client = PyBulletClient(connection_type)
         self.simulation = simulation
@@ -23,7 +18,6 @@ class Environment (object):
                 break
 
         return self.simulation.get_history()
->>>>>>> Stashed changes
 
     def update(self):
         pb.stepSimulation()
