@@ -1,5 +1,8 @@
-from time import sleep
+from decorators import add_timer
+from engine import Environment, EnvThreadPool
+from my_simulation import MySimulation
 
+<<<<<<< HEAD
 import pybullet as pb
 import pybullet_data
 
@@ -44,6 +47,18 @@ def main():
 
     while True:
         env.update()
+=======
+
+@add_timer
+def test_2():
+    env_pool = EnvThreadPool(lambda: MySimulation(), 10)
+    env_pool.interact()
+
+
+def main():
+    test_1()
+    test_2()
+>>>>>>> 3169ea6e2718b0fecf4478ae4402a3c4cbd97b16
 
 
 if __name__ == "__main__":

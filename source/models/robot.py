@@ -1,6 +1,6 @@
 import pybullet as pb
 
-from source.engine.res import Loader
+from engine.res import Loader
 
 
 class Robot(Loader):
