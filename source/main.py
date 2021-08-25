@@ -1,42 +1,34 @@
 import pybullet as pb
-import time
+import pybullet_data
 
-import engine
+from matplotlib import pyplot as plt
+
+from source import engine
 
 
-class MySimulation (engine.Simulation):
+class MySimulation(engine.res.Simulation):
 
-    def load(self):
-
+    def _load(self):
         pb.setGravity(0, 0, -9.8)
 
-        # ball
+        pb.setAdditionalSearchPath(pybullet_data.getDataPath())
+        pb.loadURDF("plane.urdf")
 
-        ball_col_shape = pb.createCollisionShape(pb.GEOM_SPHERE, radius=0.2)
-        ball_visual_shape = pb.createVisualShape(pb.GEOM_SPHERE, radius=0.2,
-                                                 rgbaColor=[0.25, 0.75, 0.25, 1])
+        vm_data = engine.ViewMatrix.ViewMatrixData([0, 0, 5], 10, 2)
+        pm_data = engine.ProjMatrix.ProjMatrixData(0.01, 20)
 
-        pb_ball = pb.createMultiBody(1, ball_col_shape, ball_visual_shape, [0, 0, 10], [0, 0, 0, 1])
+        self.camera = engine.Camera(200, 200, vm_data, pm_data)
 
-        # plane
-
-        floor_col_shape = pb.createCollisionShape(pb.GEOM_PLANE)
-        floor_visual_shape = pb.createVisualShape(pb.GEOM_BOX,
-                                                  halfExtents=[100, 100, 0.0001], rgbaColor=[1, 1, .98, 1])
-
-        pb_floor = pb.createMultiBody(0, floor_col_shape, floor_visual_shape, [0, 0, 0], [0, 0, 0, 1])
+    def _update(self):
+        plt.imshow(self.camera.snapshot())
 
 
 def main():
-
     env = engine.Environment()
-    my_sim = MySimulation()
+    env.set_simulation(MySimulation())
 
-    env.set_simulation(my_sim)
-
-    for i in range(1000):
-        env.step()
-        time.sleep(1./100.)
+    for i in range(10000):
+        env.update()
 
 
 if __name__ == "__main__":
