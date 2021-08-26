@@ -19,7 +19,8 @@ class Environment (object):
 
         return self.simulation.get_history()
 
-    def update(self):
+    def update(self, action):
+        self.simulation.update()
         pb.stepSimulation()
         return self.simulation.update()
 
