@@ -19,7 +19,7 @@ class Resource (object):
         if not self._is_load:
             self.load()
 
-        self._update()
+        return self._update()
 
     # TODO: write decorator from NotImplementedError
 

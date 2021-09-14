@@ -1,4 +1,5 @@
-from .matrix import ViewMatrix, ViewMatrixData, ProjMatrix, ProjMatrixData
+from .view_matrix import ViewMatrix, ViewMatrixData
+from .proj_matrix import ProjMatrix, ProjMatrixData
 
 import pybullet as pb
 import numpy as np
