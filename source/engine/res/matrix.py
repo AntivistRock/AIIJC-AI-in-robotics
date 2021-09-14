@@ -18,7 +18,7 @@ class Setter(object):
         self.value = value
 
     def call(self, data):
-        raise NotImplementedError()
+        raise NotImplementedError("Setter должен устанавливать значение")
 
 
 def rotate(vec: np.array, angles: np.array):

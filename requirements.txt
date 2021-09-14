@@ -7,3 +7,10 @@ pybullet==3.1.7
 pyparsing==2.4.7
 python-dateutil==2.8.2
 six==1.16.0
+torch~=1.5.0
+yaml~=0.2.5
+pyyaml~=5.3.1
+matplotlib~=3.1.3
+tqdm~=4.51.0
+ipython~=7.18.1
+pandas~=1.0.5

@@ -16,7 +16,7 @@ class Environment (object):
                 break
 
         return self.simulation.get_history()
-        
+      
     def update(self):
         self.pb_client.stepSimulation()
         return self.simulation.update()
