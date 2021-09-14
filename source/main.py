@@ -1,24 +1,12 @@
-from decorators import add_timer
-from engine import Environment, EnvThreadPool
-from my_simulation import MySimulation
+import pybullet as pb
 
-
-@add_timer
-def test_1():
-    env = Environment(simulation=MySimulation())
-    for i in range(10):
-        env.run()
-
-
-@add_timer
-def test_2():
-    env_pool = EnvThreadPool(lambda: MySimulation(), 10)
-    env_pool.interact()
+from engine import Environment
+from objects import Simulation
 
 
 def main():
-    test_1()
-    test_2()
+    env = Environment(Simulation, pb.GUI)
+    env.run(100000)
 
 
 if __name__ == "__main__":

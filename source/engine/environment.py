@@ -1,31 +1,28 @@
 import pybullet as pb
-
-from .pybullet_client import PyBulletClient
-from .res.simulation import Simulation, EmptySimulation
+from pybullet_utils import bullet_client
 
 
 class Environment (object):
 
-    def __init__(self, connection_type=pb.DIRECT, simulation=EmptySimulation()):
-        self.pb_client = PyBulletClient(connection_type)
-        self.simulation = simulation
+    def __init__(self, simulation_creator, connection_mode=pb.DIRECT):
+        self.pb_client = bullet_client.BulletClient(connection_mode)
+        self.simulation = simulation_creator(self.pb_client)
 
-    def run(self, max_num_upd=10):
+    def run(self, max_num_upd):
         self.simulation.reset()
 
-        for i in range(max_num_upd):
+        for _ in range(max_num_upd):
             if not self.update():
                 break
 
         return self.simulation.get_history()
-
-    def update(self, action):
-        self.simulation.update()
-        pb.stepSimulation()
+      
+    def update(self):
+        self.pb_client.stepSimulation()
         return self.simulation.update()
 
     def reset(self):
         self.simulation.reset()
 
-    def set_simulation(self, simulation: Simulation):
-        self.simulation = simulation
+    def set_simulation(self, simulation_creator):
+        self.simulation = simulation_creator(self.pb_client)

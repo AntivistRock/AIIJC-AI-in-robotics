@@ -1,9 +1,13 @@
-import pybullet as pb
+from pybullet_utils.bullet_client import BulletClient
 
 from .resource import Resource
 
 
 class Simulation(Resource):
+
+    def __init__(self, pb_client: BulletClient):
+        Resource.__init__(self)
+        self.pb_client = pb_client
 
     def reset(self):
         self.upload()
@@ -15,7 +19,7 @@ class Simulation(Resource):
         raise NotImplementedError("Simulation must be implemented method 'Simulation._load()'")
 
     def _upload(self):
-        pb.resetSimulation()
+        self.pb_client.resetSimulation()
 
     def _update(self):
         raise NotImplementedError("Simulation must be implemented method 'Simulation._update()'")
