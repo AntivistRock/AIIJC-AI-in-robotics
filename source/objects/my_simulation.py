@@ -1,13 +1,13 @@
 from time import sleep
 
-import pybullet as pb
 import pybullet_data
 
 import engine
 import objects
+from utils import Setter
 
 
-class Simulation(engine.res.Simulation):
+class MySimulation(engine.res.Simulation):
 
     def __init__(self, pb_client):
         engine.res.Simulation.__init__(self, pb_client)
@@ -22,13 +22,17 @@ class Simulation(engine.res.Simulation):
         self.plane = self.pb_client.loadURDF("plane.urdf")
         self.robot.load()
 
-        vm_data = engine.ViewMatrixData()
+        vm_data = engine.ViewMatrixData(
+            [0, 0, 0], [0, 0, 0], [0, 0, 1], [0, 1, 0], [0, 0.5, 0]
+        )
         pm_data = engine.ProjMatrixData(0.01, 20)
 
         self.camera = engine.Camera(320, 200, vm_data, pm_data)
 
     def _upload(self):
         self.robot.upload()
+
+        self.pb_client.resetSimulation()
 
     def _update(self):
 
@@ -44,14 +48,7 @@ class Simulation(engine.res.Simulation):
             engine.ViewMatrixData.SetEulerAngles(ang),
         ])
 
-        arm_target_pos = self.pb_client.calculateInverseKinematics(
-            self.robot.arm, self.robot.end_effector_link_index, pos)
-
-        self.pb_client.setJointMotorControlArray(
-            self.robot.arm, self.robot.joint_indices,
-            pb.POSITION_CONTROL, targetPositions=arm_target_pos
-        )
-
+        self.robot.move(pos)
         self.camera.snapshot()
 
         sleep(1)
@@ -60,3 +57,8 @@ class Simulation(engine.res.Simulation):
 
     def get_history(self):
         pass
+
+
+class MySimActionMoveRobot(Setter):
+    def call(self, sim: MySimulation):
+        sim.robot.move(self.value)

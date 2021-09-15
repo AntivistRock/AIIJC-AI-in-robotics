@@ -13,14 +13,6 @@ class Matrix(object):
         return self._matrix
 
 
-class Setter(object):
-    def __init__(self, value):
-        self.value = value
-
-    def call(self, data):
-        raise NotImplementedError("Setter должен устанавливать значение")
-
-
 def rotate(vec: np.array, angles: np.array):
 
     a, b, c = angles

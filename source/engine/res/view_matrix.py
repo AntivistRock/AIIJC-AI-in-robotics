@@ -1,7 +1,8 @@
-import numpy as np
 import pybullet as pb
 
-from .matrix import Matrix, Setter, rotate
+from .matrix import Matrix, rotate
+
+from utils import Comutating, Setter
 
 
 class ContractVMArgs(object):
@@ -11,13 +12,15 @@ class ContractVMArgs(object):
         self.vector_up = up_vector
 
 
-class ViewMatrixData(object):
-    def __init__(self):
-        self.position = np.array([0, 0, 1])
-        self.angles = np.array([0, 0, 0])
-        self.up_vector = np.array([0, 0, 1])
-        self.orient = np.array([0, 1, 0])
-        self.offset = np.array([0.1, 0, 0])
+class ViewMatrixData(Comutating):
+    def __init__(self, position, angles, up_vector, orient, offset):
+        super().__init__()
+
+        self.position = position
+        self.angles = angles
+        self.up_vector = up_vector
+        self.orient = orient
+        self.offset = offset
 
     def get(self) -> ContractVMArgs:
 
@@ -64,8 +67,7 @@ class ViewMatrix(Matrix):
         )
 
     def update_set(self, setters):
-
         for setter in setters:
-            setter.call(self._data)
+            self._data.com.action(setter)
 
         self._update()

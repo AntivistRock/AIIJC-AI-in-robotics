@@ -1,10 +1,13 @@
 import pybullet as pb
 
-from .matrix import Matrix, Setter
+from .matrix import Matrix
+from utils import Comutating, Setter
 
 
-class ProjMatrixData(object):
+class ProjMatrixData(Comutating):
     def __init__(self, near_plane: float, far_plane: float, fov=60):
+        super().__init__()
+
         self.plane = (near_plane, far_plane)
         self.fov = fov
 

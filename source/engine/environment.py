@@ -5,6 +5,8 @@ from pybullet_utils import bullet_client
 class Environment (object):
 
     def __init__(self, simulation_creator, connection_mode=pb.DIRECT):
+        super().__init__()
+
         self.pb_client = bullet_client.BulletClient(connection_mode)
         self.simulation = simulation_creator(self.pb_client)
 
@@ -23,6 +25,9 @@ class Environment (object):
 
     def reset(self):
         self.simulation.reset()
+
+    def sim_com(self, action):
+        self.simulation.com.action(action)
 
     def set_simulation(self, simulation_creator):
         self.simulation = simulation_creator(self.pb_client)

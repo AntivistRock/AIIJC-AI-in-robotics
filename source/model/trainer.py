@@ -1,11 +1,10 @@
-from source.engine.environment import Environment
-import torch
 import numpy as np
+import pandas as pd
+
+import torch
 from tqdm import trange
-from IPython.display import clear_output
-from pandas import DataFrame
-import matplotlib.pyplot as plt
-from source.engine.env_pool as EnvThreadPool
+
+import engine
 
 
 def to_one_hot(y, n_dims=None):
@@ -19,9 +18,9 @@ class Trainer:
     def __init__(self, agent, n_actions):
         self.agent = agent
         self.n_actions = n_actions
-        self.env = Environment()
+        self.env = engine.Environment()
         self.opt = torch.optim.Adam(self.agent.parameters(), lr=1e-5)
-        self.pool = EnvThreadPool(Environment, games_count=10)
+        self.pool = engine.EnvPool(engine.Environment, games_count=10)
 
     def evaluate(self, n_games=1):
         """Играет игру от начала до конца и возвращает награды на каждом шаге."""
@@ -91,7 +90,7 @@ class Trainer:
         # Примечание: не забываейте делать .detach() для advantage.
         # Ещё лучше использовать mean, а не sum, чтобы lr не масштабировать.
         # Можно исползовать тут циклы, если хотите.
-        J_hat = 0  # посчитаем ниже
+        j_hat = 0  # посчитаем ниже
 
         # 2) Temporal difference MSE
         value_loss = 0  # посчитаем ниже
@@ -99,27 +98,27 @@ class Trainer:
         cumulative_returns = state_values[:, -1].detach()
         for t in reversed(range(rollout_length)):
             r_t = rewards[:, t]  # текущие reward-ы
-            V_t = state_values[:, t]  # value текущих состоияний
-            V_next = state_values[:, t + 1].detach()  # value следующих состояний
+            v_t = state_values[:, t]  # value текущих состоияний
+            v_next = state_values[:, t + 1].detach()  # value следующих состояний
             logpi_a_s_t = logprobas_for_actions[:, t]  # вероятности сделать нужное действие
 
             # G_t = r_t + gamma * G_{t+1}, как в прошлый раз на reinforce
             cumulative_returns = G_t = r_t + gamma * cumulative_returns
 
             # Посчитайте MSE для V(s)
-            value_loss += (r_t + gamma * V_next - V_t) ** 2
+            value_loss += (r_t + gamma * v_next - v_t) ** 2
 
             # посчитайте advantage A(s_t, a_t), используя cumulative returns и V(s_t) в качестве бейзлайна
-            advantage = cumulative_returns - V_t
+            advantage = cumulative_returns - v_t
             advantage = advantage.detach()
 
             # посчитаем весь policy loss (-J_hat).
-            J_hat += logpi_a_s_t * advantage
+            j_hat += logpi_a_s_t * advantage
 
         entropy_reg = torch.mean(logprobas * probas)  # compute entropy regularizer
 
         # усредним всё это дело с какими-то весами
-        loss = -J_hat.mean() + value_loss.mean() + -0.01 * entropy_reg
+        loss = -j_hat.mean() + value_loss.mean() + -0.01 * entropy_reg
         # print(loss)
         self.opt.zero_grad()
 
@@ -129,17 +128,17 @@ class Trainer:
 
     def train(self):
         rewards_history = []
-        moving_average = lambda x, **kw: DataFrame({'x': np.asarray(x)}).x.ewm(**kw).mean().values
+        moving_average = lambda x, **kw: pd.DataFrame({'x': np.asarray(x)}).x.ewm(**kw).mean().values
         for i in trange(15000):
 
             memory = list(self.pool.prev_memory_states)
             rollout_obs, rollout_actions, rollout_rewards, rollout_mask = self.pool.interact()
             self.train_on_rollout(rollout_obs, rollout_actions, rollout_rewards, rollout_mask, memory)
 
-            if i % 100 == 0:
-                rewards_history.append(np.mean(self.evaluate()))
-                clear_output(True)
-                plt.plot(rewards_history, label='rewards')
-                plt.plot(moving_average(np.array(rewards_history), span=10), label='rewards ewma@10')
-                plt.legend()
-                plt.show()
+            # if i % 100 == 0:
+            #     rewards_history.append(np.mean(self.evaluate()))
+            #     clear_output(True)
+            #     plt.plot(rewards_history, label='rewards')
+            #     plt.plot(moving_average(np.array(rewards_history), span=10), label='rewards ewma@10')
+            #     plt.legend()
+            #     plt.show()
