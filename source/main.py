@@ -7,11 +7,11 @@ import objects
 
 
 def main():
-    env = engine.Environment(objects.SimpleSimulation, pb.GUI)
+    env = engine.Environment(objects.MySimulation, pb.GUI)
 
     env.simulation.load()
 
-    action = objects.SSAMoveRobot([0, 0, 0.9])
+    action = objects.MySimulation.MoveRobot([0, 0, 0.9])
     env.sim_com(action)
 
     sleep(1)

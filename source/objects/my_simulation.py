@@ -4,13 +4,13 @@ import pybullet_data
 
 import engine
 import objects
-from utils import Setter
+import utils
 
 
-class MySimulation(engine.res.Simulation):
+class MySimulation(engine.Simulation):
 
     def __init__(self, pb_client):
-        engine.res.Simulation.__init__(self, pb_client)
+        engine.Simulation.__init__(self, pb_client)
 
         self.robot = objects.Robot(self.pb_client)
 
@@ -58,7 +58,6 @@ class MySimulation(engine.res.Simulation):
     def get_history(self):
         pass
 
-
-class MySimActionMoveRobot(Setter):
-    def call(self, sim: MySimulation):
-        sim.robot.move(self.value)
+    class MoveRobot(utils.Setter):
+        def call(self, sim):
+            sim.robot.move(self.value)

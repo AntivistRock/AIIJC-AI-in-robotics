@@ -1,6 +1,6 @@
-from utils import ThreadPool
+import utils
 
 
-class EnvPool(ThreadPool):
+class EnvPool(utils.ThreadPool):
     def __init__(self, env, games_count):
-        super().__init__()
+        super().__init__(lambda: 0)
