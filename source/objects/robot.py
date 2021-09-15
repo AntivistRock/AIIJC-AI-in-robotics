@@ -11,7 +11,7 @@ class Robot(Loader):
 
     def _load(self):
         self.arm = self.pb_client.loadURDF(
-            r"..\..\ext\models\manip\dependencies\ur_description\urdf\ur10_robot.urdf",
+            r"..\..\ext\models\manip\dependencies\ur_description\urdf\ur10_new.urdf",
             basePosition=[0, 0, 0], useFixedBase=True)
 
         self.end_effector_link_index = self.pb_client.getNumJoints(self.arm) - 1
