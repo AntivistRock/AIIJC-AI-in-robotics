@@ -2,20 +2,8 @@ import numpy as np
 from numpy import cos, sin
 
 
-class Matrix(object):
-    def __init__(self):
-        self._update()
-
-    def _update(self):
-        self._matrix = None
-
-    def get(self):
-        return self._matrix
-
-
-def rotate(vec: np.array, angles: np.array):
-
-    a, b, c = angles
+def rotate(vec: np.array, ang: np.array):
+    a, b, c = ang
     a, b, c = -a, -b, -c
 
     rot = np.matrix([

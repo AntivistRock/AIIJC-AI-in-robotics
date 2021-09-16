@@ -1,7 +1,7 @@
-from engine.res import Loader
+import engine
 
 
-class Kettle(Loader):
+class Kettle(engine.ILoader):
 
     def _load(self):
         pass

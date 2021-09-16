@@ -1,8 +1,7 @@
 import pybullet as pb
 
-from .matrix import Matrix, rotate
-
-from utils import Comutating, Setter
+import utils
+from .i_matrix import IMatrix
 
 
 class ContractVMArgs(object):
@@ -12,7 +11,7 @@ class ContractVMArgs(object):
         self.vector_up = up_vector
 
 
-class ViewMatrixData(Comutating):
+class ViewMatrixData(utils.IComutating):
     def __init__(self, position, angles, up_vector, orient, offset):
         super().__init__()
 
@@ -23,11 +22,10 @@ class ViewMatrixData(Comutating):
         self.offset = offset
 
     def get(self) -> ContractVMArgs:
-
         angles = [-self.angles[0], -self.angles[1], -self.angles[2]]
 
-        orient_rot = rotate(self.orient, angles)
-        offset_rot = rotate(self.offset, angles)
+        orient_rot = utils.rotate(self.orient, angles)
+        offset_rot = utils.rotate(self.offset, angles)
 
         camera_pos = self.position + offset_rot
         target_pos = camera_pos + orient_rot
@@ -35,27 +33,28 @@ class ViewMatrixData(Comutating):
 
         return ContractVMArgs(camera_pos, target_pos, up_vector)
 
-    class SetCameraPos(Setter):
+    class SetCameraPos(utils.ISetter):
         def call(self, data):
             data.position = self.value
 
-    class SetEulerAngles(Setter):
+    class SetEulerAngles(utils.ISetter):
         def call(self, data):
             data.angles = self.value
 
-    class SetUpVector(Setter):
+    class SetUpVector(utils.ISetter):
         def call(self, data):
             data.up_vector = self.value
 
-    class SetOrient(Setter):
+    class SetOrient(utils.ISetter):
         def call(self, data):
             data.orient = self.value
 
 
-class ViewMatrix(Matrix):
+class ViewMatrix(IMatrix):
 
     def __init__(self, data: ViewMatrixData):
         self._data = data
+        self.data_com = data.get_com()
         super().__init__()
 
     def _update(self):
@@ -68,6 +67,6 @@ class ViewMatrix(Matrix):
 
     def update_set(self, setters):
         for setter in setters:
-            self._data.com.action(setter)
+            self.data_com.action(setter)
 
         self._update()

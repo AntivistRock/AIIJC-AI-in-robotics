@@ -1,21 +1,14 @@
-import pybullet as pb
-
-from time import sleep
+from pybullet import GUI
 
 import engine
-import objects
+import model
 
 
 def main():
-    env = engine.Environment(objects.MySimulation, pb.GUI)
 
-    env.simulation.load()
+    i_model = model.Model()
 
-    action = objects.MySimulation.MoveRobot([0, 0, 0.9])
-    env.sim_com(action)
-
-    sleep(1)
-
+    env = engine.Environment(i_model, GUI)
     env.run(10000)
 
 

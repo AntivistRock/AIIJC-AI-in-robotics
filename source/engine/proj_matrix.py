@@ -1,26 +1,26 @@
 import pybullet as pb
 
-from .matrix import Matrix
-from utils import Comutating, Setter
+from utils import IComutating, ISetter
+from .i_matrix import IMatrix
 
 
-class ProjMatrixData(Comutating):
+class ProjMatrixData(IComutating):
     def __init__(self, near_plane: float, far_plane: float, fov=60):
-        super().__init__()
+        IComutating.__init__(self)
 
         self.plane = (near_plane, far_plane)
         self.fov = fov
 
-    class SetPlane(Setter):
+    class SetPlane(ISetter):
         def call(self, data):
             data.plane = self.value
 
-    class SetFov(Setter):
+    class SetFov(ISetter):
         def call(self, data):
             data.fov = self.value
 
 
-class ProjMatrix(Matrix):
+class ProjMatrix(IMatrix):
 
     def __init__(self, data: ProjMatrixData, screen):
         self._data = data
