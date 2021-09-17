@@ -58,7 +58,7 @@ class Simulation(IResource, utils.IComutating):
         ])
 
         # self.robot.move(pos)
-        self.camera.snapshot()
+        # self.camera.snapshot()
 
         self.pb_client.stepSimulation()
 

@@ -15,8 +15,18 @@ class Robot(engine.ILoader):
         self._pos = [0.5, 0.2, 0]
 
         self.arm = self.pb_client.loadURDF(
-            r"..\..\ext\models\manip\dependencies\ur_description\urdf\ur10_new.urdf",
+            r"..\..\ext\models\manip\dependencies\ur_description\urdf\ur10_robot.urdf",
             basePosition=[0, 0, 0], useFixedBase=True)
+
+        # self.griper = self.pb_client.loadURDF(
+        #     r"..\..\ext\models\schunk_wsg50_model\models\wsg50_110.urdf",
+        # )
+        #
+        # self.pb_client.createConstraint(
+        #     self.arm, self.pb_client.getNumJoints(self.arm) - 1,
+        #     self.griper, 0, pb.JOINT_FIXED,
+        #     [1, 0, 0], [0, 0, 0], [0, 0, 0]
+        # )
 
         self.end_effector_link_index = self.pb_client.getNumJoints(self.arm) - 1
 

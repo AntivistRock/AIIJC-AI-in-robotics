@@ -18,9 +18,8 @@ class Trainer:
     def __init__(self, agent, n_actions):
         self.agent = agent
         self.n_actions = n_actions
-        self.env = engine.Environment()
         self.opt = torch.optim.Adam(self.agent.parameters(), lr=1e-5)
-        self.pool = engine.EnvPool(engine.Environment, games_count=10)
+        self.pool = engine.EnvPool()
 
     def evaluate(self, n_games=1):
         """Играет игру от начала до конца и возвращает награды на каждом шаге."""
@@ -127,13 +126,11 @@ class Trainer:
         self.opt.step()
 
     def train(self):
-        rewards_history = []
-        moving_average = lambda x, **kw: pd.DataFrame({'x': np.asarray(x)}).x.ewm(**kw).mean().values
+
         for i in trange(15000):
 
-            memory = list(self.pool.prev_memory_states)
-            rollout_obs, rollout_actions, rollout_rewards, rollout_mask = self.pool.interact()
-            self.train_on_rollout(rollout_obs, rollout_actions, rollout_rewards, rollout_mask, memory)
+            result = self.pool.run(100)
+            # self.train_on_rollout()
 
             # if i % 100 == 0:
             #     rewards_history.append(np.mean(self.evaluate()))

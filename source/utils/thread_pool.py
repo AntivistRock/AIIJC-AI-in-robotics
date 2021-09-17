@@ -17,11 +17,14 @@ class ThreadPool(object):
                 raise AttributeError(f"{self.run.__name__} => Len of arguments must be equal quantity")
 
         quantity_alone = quantity // self._n_parallel
-        threads = [
-            self._Thread(
-                quantity_alone, self._function, arguments
-            ) for _ in range(self._n_parallel)
-        ]
+
+        threads = []
+        for i in range(self._n_parallel):
+            new_thread = self._Thread(
+                quantity_alone, self._function, arguments[i]
+            )
+
+            threads.append(new_thread)
 
         [thread.start() for thread in threads]
         [thread.join() for thread in threads]
