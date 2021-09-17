@@ -10,29 +10,22 @@ class Robot(engine.ILoader):
         engine.ILoader.__init__(self)
         self.pb_client = pb_client
 
+    def get_pos(self):
+        return self._pos
+
     def _load(self):
 
         self._pos = [0.5, 0.2, 0]
 
         self.arm = self.pb_client.loadURDF(
-            r"..\..\ext\models\manip\dependencies\ur_description\urdf\ur10_robot.urdf",
+            "../exe/objects/arm/dependencies/ur_description/urdf/ur10_new_from_home_pc.urdf",
             basePosition=[0, 0, 0], useFixedBase=True)
 
-        # self.griper = self.pb_client.loadURDF(
-        #     r"..\..\ext\models\schunk_wsg50_model\models\wsg50_110.urdf",
-        # )
-        #
-        # self.pb_client.createConstraint(
-        #     self.arm, self.pb_client.getNumJoints(self.arm) - 1,
-        #     self.griper, 0, pb.JOINT_FIXED,
-        #     [1, 0, 0], [0, 0, 0], [0, 0, 0]
-        # )
-
-        self.end_effector_link_index = self.pb_client.getNumJoints(self.arm) - 1
+        self.end_effector_link_index = self.pb_client.getNumJoints(self.arm) - 2
 
         self.joint_info = [self.pb_client.getJointInfo(self.arm, i)
                            for i in range(self.pb_client.getNumJoints(self.arm))]
-        self.joint_indices = [x[0] for x in self.joint_info if x[2] == pb.JOINT_REVOLUTE]
+        self.joint_indices = [x[0] for x in self.joint_info if x[2] == pb.JOINT_REVOLUTE] + [9, 10]
 
     def rotate(self, angles):
         self._pos = utils.rotate(self._pos, angles)

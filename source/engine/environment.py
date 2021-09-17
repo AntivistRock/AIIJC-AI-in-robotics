@@ -18,7 +18,6 @@ class Environment (object):
         self.sim_com = self.simulation.get_com()
 
         self.agent = Agent(i_model, self.sim_com)
-        self.agent_com = self.agent.get_com()
 
         self.history = model.History()
 
@@ -33,18 +32,12 @@ class Environment (object):
         is_running = self.simulation.update()
         self.agent.update()
 
-        pred_getter = Agent.GetPrediction()
-        self.agent_com.action(pred_getter)
-
-        reward_getter = Simulation.GetReward()
-        self.sim_com.action(reward_getter)
-
-        history_object = model.History.Node(
-            pred_getter.get(),
-            reward_getter.get()
+        history_node = model.History.Node(
+            self.agent.last_prediction,
+            *self.simulation.get_history()
         )
 
-        self.history.add(history_object)
+        self.history.add(history_node)
 
         return is_running
 

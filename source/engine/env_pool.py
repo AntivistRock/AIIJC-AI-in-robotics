@@ -12,3 +12,14 @@ class EnvPool(utils.ThreadPool):
             return env.history
 
         super().__init__(worker)
+
+    def interract(self, quantity, arguments):
+
+        histories = self.run(quantity, arguments)
+
+        history = histories[0]
+
+        for curr_history in histories[1:-1]:
+            history.concatinate(curr_history)
+
+        return history

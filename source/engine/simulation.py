@@ -4,6 +4,8 @@ from pybullet_utils.bullet_client import BulletClient
 import objects
 import utils
 
+from time import sleep
+
 from .camera import Camera
 from .i_resource import IResource
 from .proj_matrix import ProjMatrixData
@@ -22,9 +24,6 @@ class Simulation(IResource, utils.IComutating):
     def reset(self):
         self.upload()
 
-    def get_history(self):
-        pass
-
     def _load(self):
         # self.pb_client.setGravity(0, 0, -9.8)
         self.pb_client.setAdditionalSearchPath(getDataPath())
@@ -40,9 +39,10 @@ class Simulation(IResource, utils.IComutating):
 
         self.camera = Camera(320, 200, vm_data, pm_data)
 
+        self._last_screen = None
+
     def _upload(self):
         self.robot.upload()
-        self.pb_client.resetSimulation()
 
     def _update(self):
         state = self.pb_client.getLinkState(self.robot.arm, self.robot.end_effector_link_index)
@@ -58,21 +58,21 @@ class Simulation(IResource, utils.IComutating):
         ])
 
         # self.robot.move(pos)
-        # self.camera.snapshot()
+        self._last_screen = self.camera.snapshot()
 
         self.pb_client.stepSimulation()
+        sleep(1)
 
         return True
 
-    class MoveRobot(utils.Commutator.IAction):
+    def get_history(self):
+        return [self._last_screen, 0]
 
-        def __init__(self):
-            utils.Commutator.IAction.__init__(self)
-
+    class MoveRobot(utils.ISetter):
         def call(self, sim):
-            sim.robot.rotate([0.1, 0.2, 0.1])
+            if self.value == 0:
+                pass
+            elif self.value == 1:
+                sim.robot.rotate([0.1, 0, 0])
+
             sim.robot.move()
-
-    class GetReward(utils.IGetter):
-        def call(self, sim):
-            self._value = 1

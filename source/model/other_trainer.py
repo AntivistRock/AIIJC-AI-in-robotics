@@ -126,11 +126,12 @@ class Trainer:
         self.opt.step()
 
     def train(self):
-
+        rewards_history = []
+        moving_average = lambda x, **kw: pd.DataFrame({'x': np.asarray(x)}).x.ewm(**kw).mean().values
         for i in trange(15000):
 
-            result = self.pool.run(100)
-            # self.train_on_rollout()
+            rollout_obs, rollout_actions, rollout_rewards, rollout_mask = self.pool.run(100)
+            self.train_on_rollout(rollout_obs, rollout_actions, rollout_rewards, rollout_mask)
 
             # if i % 100 == 0:
             #     rewards_history.append(np.mean(self.evaluate()))

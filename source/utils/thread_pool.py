@@ -7,6 +7,9 @@ class ThreadPool(object):
         self._function = function
         self._n_parallel = n_parallel
 
+    def get_n_parallel(self):
+        return self._n_parallel
+
     def run(self, quantity, arguments=None, enable_warnings=False):
 
         if enable_warnings:
@@ -18,13 +21,11 @@ class ThreadPool(object):
 
         quantity_alone = quantity // self._n_parallel
 
-        threads = []
-        for i in range(self._n_parallel):
-            new_thread = self._Thread(
-                quantity_alone, self._function, arguments[i]
-            )
-
-            threads.append(new_thread)
+        threads = [
+            self._Thread(
+                quantity_alone, self._function, arguments
+            ) for _ in range(self._n_parallel)
+        ]
 
         [thread.start() for thread in threads]
         [thread.join() for thread in threads]
@@ -43,6 +44,6 @@ class ThreadPool(object):
 
         def run(self):
             self.reply = [
-                self._function(*self._arguments[i]) if self._arguments else self._function()
+                self._function(*self._arguments)
                 for i in range(self._quantity)
             ]

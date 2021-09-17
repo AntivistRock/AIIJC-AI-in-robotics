@@ -1,14 +1,20 @@
+import model
+import engine
+
 from pybullet import GUI
 
-import engine
-import model
+from PIL import Image
+import numpy as np
+from matplotlib import cms
 
 
 def main():
-    i_model = model.Model()
+    agent = model.Model()
+    env = engine.Environment(agent)
 
-    env = engine.Environment(i_model, GUI)
-    env.run(1000)
+    env.run(5)
+
+    input()
 
 
 if __name__ == "__main__":
