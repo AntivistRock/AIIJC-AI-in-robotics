@@ -1,49 +1,25 @@
-import threading
-import pybullet as pb
-from psutil import cpu_count
-
-from . import Environment
+import utils
+from .environment import Environment
 
 
-class EnvThreadPool(object):
+class EnvPool(utils.ThreadPool):
+    def __init__(self):
 
-    def __init__(self, simulation_creator, games_count=100, n_parallel_games=cpu_count()):
-        self.environments = [Environment(pb.DIRECT) for _ in range(n_parallel_games)]
-        [env.set_simulation(simulation_creator()) for env in self.environments]
+        def worker(model, num_steps):
+            env = Environment(model)
+            env.run(num_steps)
 
-        self.threads = []
-        games_alone = games_count // n_parallel_games
+            return env.history
 
-        if games_count % n_parallel_games == 0:
-            [self.threads.append(self.EnvThread(
-                env, games_alone
-            )) for env in self.environments]
-        else:
-            for i in range(n_parallel_games - 1):
-                self.threads.append(self.EnvThread(
-                    self.environments[i], games_alone
-                ))
-            self.threads.append(self.EnvThread(
-                self.environments[-1], games_count % n_parallel_games
-            ))
+        super().__init__(worker)
 
-    def interact(self):
+    def interract(self, quantity, arguments):
 
-        for thread in self.threads:
-            thread.start()
+        histories = self.run(quantity, arguments)
 
-        for thread in self.threads:
-            thread.join()
+        history = histories[0]
 
-        return [thread.history for thread in self.threads]
+        for curr_history in histories[1:-1]:
+            history.concatinate(curr_history)
 
-    class EnvThread(threading.Thread):
-        def __init__(self, environment, games_count):
-            threading.Thread.__init__(self)
-            self.environment = environment
-            self.games_count = games_count
-            self.history = []
-
-        def run(self):
-            for i in range(self.games_count):
-                self.history.append(self.environment.run())
+        return history

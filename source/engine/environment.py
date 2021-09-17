@@ -1,30 +1,45 @@
-import pybullet as pb
+from .agent import Agent
+from .simulation import Simulation
 
-from .pybullet_client import PyBulletClient
-from .res.simulation import Simulation, EmptySimulation
+import model
+
+import pybullet as pb
+from pybullet_utils import bullet_client
 
 
 class Environment (object):
 
-    def __init__(self, connection_type=pb.DIRECT, simulation=EmptySimulation()):
-        self.pb_client = PyBulletClient(connection_type)
-        self.simulation = simulation
+    def __init__(self, i_model, connection_mode=pb.DIRECT):
+        super().__init__()
 
-    def run(self, max_num_upd=10):
-        self.simulation.reset()
+        self.pb_client = bullet_client.BulletClient(connection_mode)
 
-        for i in range(max_num_upd):
+        self.simulation = Simulation(self.pb_client)
+        self.sim_com = self.simulation.get_com()
+
+        self.agent = Agent(i_model, self.sim_com)
+
+        self.history = model.History()
+
+    def run(self, max_num_upd):
+        self.reset()
+
+        for _ in range(max_num_upd):
             if not self.update():
                 break
-
-        return self.simulation.get_history()
-
+      
     def update(self):
-        pb.stepSimulation()
-        return self.simulation.update()
+        is_running = self.simulation.update()
+        self.agent.update()
+
+        history_node = model.History.Node(
+            self.agent.last_prediction,
+            *self.simulation.get_history()
+        )
+
+        self.history.add(history_node)
+
+        return is_running
 
     def reset(self):
         self.simulation.reset()
-
-    def set_simulation(self, simulation: Simulation):
-        self.simulation = simulation
