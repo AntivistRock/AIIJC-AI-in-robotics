@@ -3,14 +3,10 @@ import engine
 
 from pybullet import GUI
 
-from PIL import Image
-import numpy as np
-from matplotlib import cms
-
 
 def main():
     agent = model.Model()
-    env = engine.Environment(agent)
+    env = engine.Environment(agent, GUI)
 
     env.run(5)
 
