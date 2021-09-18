@@ -5,6 +5,7 @@ import objects
 import utils
 
 from time import sleep
+import numpy as np
 
 from .camera import Camera
 from .i_resource import IResource
@@ -19,25 +20,32 @@ class Simulation(IResource, utils.IComutating):
         utils.IComutating.__init__(self)
 
         self.pb_client = pb_client
+        self.kettle = objects.Kettle(self.pb_client)
         self.robot = objects.Robot(self.pb_client)
 
     def reset(self):
         self.upload()
 
     def _load(self):
-        # self.pb_client.setGravity(0, 0, -9.8)
+
         self.pb_client.setAdditionalSearchPath(getDataPath())
         self.pb_client.setRealTimeSimulation(1)
 
         self.plane = self.pb_client.loadURDF("plane.urdf")
+        self.table = self.pb_client.loadURDF("table/table.urdf", basePosition=[0, 1.5, 0],
+                                             baseOrientation=self.pb_client.getQuaternionFromEuler([0, 0, np.pi / 2]))
+        self.kettle._load()
         self.robot.load()
+        self.robot.get_start_pos()
+
+        self.pb_client.setGravity(0, 0, -9.8)
 
         vm_data = ViewMatrixData(
             [0, 0, 0], [0, 0, 0], [0, 0, 1], [0, 1, 0], [0, 0.5, 0]
         )
         pm_data = ProjMatrixData(0.01, 20)
 
-        self.camera = Camera(320, 200, vm_data, pm_data)
+        self.camera = Camera(64, 64, vm_data, pm_data)
 
         self._last_screen = None
 

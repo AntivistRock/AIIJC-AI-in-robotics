@@ -9,7 +9,7 @@ from pybullet_utils import bullet_client
 
 class Environment (object):
 
-    def __init__(self, i_model, connection_mode=pb.DIRECT):
+    def __init__(self, i_model, connection_mode=pb.GUI):
         super().__init__()
 
         self.pb_client = bullet_client.BulletClient(connection_mode)
