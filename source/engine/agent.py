@@ -13,7 +13,7 @@ class Agent(IResource):
 
     def _update(self):
         # prediction = self.model.predict()
-        prediciton = 7
+        prediciton = 2
 
         self.sim_com.action(Simulation.MoveRobot(prediciton))
 
