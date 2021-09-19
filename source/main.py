@@ -1,16 +1,18 @@
-import model
 import engine
+from model.teapot_detectron import TeapotDetectron
+from model import Model
 
 from pybullet import GUI
 
 
 def main():
-    agent = model.KettleModel()
-    env = engine.Environment(agent)
+    env = engine.Environment(Model(6))
+    env.run(1)
 
-    env.run(5)
+    detectron = TeapotDetectron()
 
-    input()
+    image_with_mask = detectron.get_points(env.history.states[0])
+    print(image_with_mask.size())
 
 
 if __name__ == "__main__":

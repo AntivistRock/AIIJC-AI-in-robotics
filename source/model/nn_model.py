@@ -10,10 +10,10 @@ class Flatten(nn.Module):
 
 
 class SimpleRecurrentAgent(nn.Module):
-    def __init__(self, obs_shape, n_actions, reuse=False):
+    def __init__(self, im_channels=4, n_actions=6, reuse=False):
         super().__init__()
 
-        self.conv0 = nn.Conv2d(obs_shape[0], 32, kernel_size=(3, 3), stride=(2, 2))
+        self.conv0 = nn.Conv2d(im_channels, 32, kernel_size=(3, 3), stride=(2, 2))
         self.conv1 = nn.Conv2d(32, 32, kernel_size=(3, 3), stride=(2, 2))
         self.conv2 = nn.Conv2d(32, 32, kernel_size=(3, 3), stride=(2, 2))
         self.flatten = Flatten()

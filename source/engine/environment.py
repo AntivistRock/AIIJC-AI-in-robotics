@@ -9,7 +9,7 @@ from pybullet_utils import bullet_client
 
 class Environment (object):
 
-    def __init__(self, i_model, connection_mode=pb.GUI):
+    def __init__(self, i_model, connection_mode=pb.DIRECT):
         super().__init__()
 
         self.pb_client = bullet_client.BulletClient(connection_mode)
@@ -45,4 +45,4 @@ class Environment (object):
         self.simulation.reset()
 
     def set_model(self, new_model):
-        self.agent.model = new_model
+        self.agent = Agent(new_model, self.sim_com)

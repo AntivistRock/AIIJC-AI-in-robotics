@@ -4,7 +4,6 @@ from numpy import cos, sin
 
 def rotate(vec: np.array, ang: np.array):
     a, b, c = ang
-    a, b, c = -a, -b, -c
 
     rot = np.matrix([
         [
@@ -24,4 +23,4 @@ def rotate(vec: np.array, ang: np.array):
         ],
     ])
 
-    return np.array(np.matmul(vec, rot))[0]
+    return np.array(np.matmul(rot, vec))[0]
