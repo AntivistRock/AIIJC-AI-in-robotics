@@ -34,7 +34,7 @@ class Simulation(IResource, utils.IComutating):
         self.plane = self.pb_client.loadURDF("plane.urdf")
         self.table = self.pb_client.loadURDF("table/table.urdf", basePosition=[0, 1.5, 0],
                                              baseOrientation=self.pb_client.getQuaternionFromEuler([0, 0, np.pi / 2]))
-        self.kettle._load()
+        self.kettle.load()
         self.robot.load()
         self.robot.get_start_pos()
 

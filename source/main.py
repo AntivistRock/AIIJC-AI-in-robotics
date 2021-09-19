@@ -1,7 +1,7 @@
 import model
 import engine
 
-#from pybullet import GUI
+from pybullet import GUI
 
 
 def main():

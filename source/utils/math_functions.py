@@ -24,4 +24,4 @@ def rotate(vec: np.array, ang: np.array):
         ],
     ])
 
-    return np.array(np.matmul(vec, rot))[0]
+    return np.array(np.matmul(rot, vec))[0]
