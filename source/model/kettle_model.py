@@ -8,7 +8,7 @@ import functools
 import inspect
 
 
-class Model(object):
+class KettleModel(object):
 
     def __init__(self):
 
