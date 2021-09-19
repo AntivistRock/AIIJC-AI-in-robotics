@@ -1,12 +1,12 @@
 import model
 import engine
 
-#from pybullet import GUI
+from pybullet import GUI
 
 
 def main():
     agent = model.Model()
-    env = engine.Environment(agent, GUI)
+    env = engine.Environment(agent)
 
     env.run(5)
 

@@ -16,7 +16,7 @@ class Model(object):
         # self.detectron = TeapotDetectron()
 
     def __getattr__(self, name):
-        """Inject the client id into Bullet functions."""
+
         attribute = getattr(self.simple_rec_agent, name)
 
         if inspect.isbuiltin(attribute):
