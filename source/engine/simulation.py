@@ -36,16 +36,15 @@ class Simulation(IResource, utils.IComutating):
                                              baseOrientation=self.pb_client.getQuaternionFromEuler([0, 0, np.pi / 2]))
         self.kettle.load()
         self.robot.load()
-        self.robot.get_start_pos()
 
         self.pb_client.setGravity(0, 0, -9.8)
 
         vm_data = ViewMatrixData(
-            [0, 0, 0], [0, 0, 0], [0, 0, 1], [0, 1, 0], [0, 0.5, 0]
+            [0, 0, 0], [0, 0, 0], [0, 0, 1], [-1, 0, 0], [0, 0, 0]
         )
-        pm_data = ProjMatrixData(0.01, 20)
+        pm_data = ProjMatrixData(0.01, 10)
 
-        self.camera = Camera(64, 64, vm_data, pm_data)
+        self.camera = Camera(320, 200, vm_data, pm_data)
 
         self._last_screen = None
 
@@ -55,7 +54,7 @@ class Simulation(IResource, utils.IComutating):
     def _update(self):
         state = self.pb_client.getLinkState(self.robot.arm, self.robot.end_effector_link_index)
 
-        pos = list(state[0])
+        pos = self.robot.get_pos()
         ang = list(self.pb_client.getEulerFromQuaternion(state[1]))
 
         # pos = rotate(pos, [0.1, 0.1, 0])
@@ -74,13 +73,31 @@ class Simulation(IResource, utils.IComutating):
         return True
 
     def get_history(self):
-        return [self._last_screen, 0]
+
+        # calc state, reward
+
+        reward = 1
+
+        return [self._last_screen, reward]  # [state, reward]
 
     class MoveRobot(utils.ISetter):
+
         def call(self, sim):
             if self.value == 0:
-                pass
+                sim.robot.rotate_left()
             elif self.value == 1:
-                sim.robot.rotate([0.1, 0, 0])
+                sim.robot.rotate_right()
+            elif self.value == 2:
+                sim.robot.move_up()
+            elif self.value == 3:
+                sim.robot.move_down()
+            elif self.value == 4:
+                sim.robot.move_forward()
+            elif self.value == 5:
+                sim.robot.move_back()
+            elif self.value == 6:
+                sim.robot.move_right()
+            elif self.value == 7:
+                sim.robot.move_left()
 
             sim.robot.move()

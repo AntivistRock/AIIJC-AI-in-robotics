@@ -5,8 +5,8 @@ from pybullet import GUI
 
 
 def main():
-    agent = model.Model()
-    env = engine.Environment(agent, GUI)
+    agent = model.KettleModel()
+    env = engine.Environment(agent)
 
     env.run(5)
 

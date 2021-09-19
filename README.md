@@ -24,11 +24,13 @@ $ venv\Scripts\activate
 4) Установите необходимые библиотеки
 ```console
 $ pip install -r requirements.txt
+$ pip install -t ./source/ext/libs/detectron2
 ```
 
 5) И запустите симуляцию
 ```console
-$ python "./source/main.py"
+$ cd ./source
+$ python main.py
 ```
 
 ### Полезные ссылки:

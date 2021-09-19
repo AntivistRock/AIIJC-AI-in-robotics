@@ -12,8 +12,8 @@ class Agent(IResource):
         self.last_prediction = None
 
     def _update(self):
-        # prediction = self.model.forward()
-        prediciton = 1
+        # prediction = self.model.predict()
+        prediciton = 7
 
         self.sim_com.action(Simulation.MoveRobot(prediciton))
 
