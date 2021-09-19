@@ -30,13 +30,15 @@ class TeapotDetectron(object):
         self.predictor = DefaultPredictor(self.cfg)
 
     def predict(self, im):
-        outputs = self.predictor(im)
-        outputs = outputs['instances'].get_fields()
-        return outputs['scores'].to("cpu") >= 0.7
+        with torch.no_grad():
+            outputs = self.predictor(im)
+            outputs = outputs['instances'].get_fields()
+            return outputs['scores'].to("cpu") >= 0.7
 
     def get_points(self, im):
-        outputs = self.predictor(im)
-        outputs = outputs['instances'].get_fields()
-        mask = outputs['instances'].get_fields()['pred_masks'][0].to('cpu')
-        mask = mask.reshape([mask.shape[0], mask.shape[1], 1])
+        with torch.no_grad():
+            outputs = self.predictor(im)
+            outputs = outputs['instances'].get_fields()
+            mask = outputs['instances'].get_fields()['pred_masks'][0].to('cpu')
+            mask = mask.reshape([mask.shape[0], mask.shape[1], 1])
         return torch.cat([torch.tensor(im), mask], axis=2)

@@ -1,5 +1,8 @@
 import numpy as np
 import torch
+from pybullet import GUI
+import pandas as pd
+import matplotlib.pyplot as plt
 
 import engine
 from .history import History
@@ -18,9 +21,23 @@ class Trainer(object):
         self.model = model
         self.pool = engine.EnvPool()
 
-        self.opt = torch.optim.Adam(self.model.parameters(), lr=1e-5)
+        self.opt = torch.optim.Adam(self.model.simple_rec_agent.parameters(), lr=1e-5)
 
-        self.n_actions = 8
+        self.n_actions = 6
+        self.moving_average = lambda x, **kw: pd.DataFrame({'x': np.asarray(x)}).x.ewm(**kw).mean().values
+        self.evaluate_history = []
+
+    def evaluate(self, n_actions=10):
+        """Играет игру от начала до конца и возвращает награды на каждом шаге."""
+        with torch.no_grad():
+            self.model.simple_rec_agent.eval()
+            env = engine.Environment(self.model, GUI)
+            self.evaluate_history += sum(env.run(n_actions).rewards)
+        self.model.simple_rec_agent.train()
+        plt.plot(self.evaluate_history, label='rewards')
+        plt.plot(self.moving_average(np.array(self.evaluate_history), span=10), label='rewards ewma@10')
+        plt.legend()
+        plt.show()
 
     def train_on_rollout(self, history: History, prev_memory_states, gamma=0.99):
         """
@@ -47,7 +64,7 @@ class Trainer(object):
             # вычислите моделью logits_t и values_t.
             # и зааппендьте их к спискам logits и state_values
 
-            memory, (logits_t, values_t) = self.model.forward(memory, obs_t)
+            memory, (logits_t, values_t) = self.model.forward(obs_t, memory)
             logits.append(logits_t)
             state_values.append(values_t)
 
@@ -104,7 +121,13 @@ class Trainer(object):
 
     def train(self, n):
 
-        for _ in range(n):
+        for rollout_number in range(n):
 
             history = self.pool.run(5, [self.model, 10])
             self.train_on_rollout(history, self.model.get_initial_state(self.pool.get_n_parallel()))
+
+            if rollout_number % 500 == 0:
+                self.evaluate()
+
+            if rollout_number % 2000 == 0:
+                torch.save(self.model.simple_rec_agent, f"../res/agent_weights/agent_weight_{rollout_number}.pth")
