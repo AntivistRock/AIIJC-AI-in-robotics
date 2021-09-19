@@ -34,9 +34,14 @@ class TeapotDetectron(object):
         outputs = outputs['instances'].get_fields()
         return outputs['scores'].to("cpu") >= 0.7
 
-    def get_points(self, im):
+    def get_points(self, im, bs=1):
         outputs = self.predictor(im)
         outputs = outputs['instances'].get_fields()
-        mask = outputs['instances'].get_fields()['pred_masks'][0].to('cpu')
-        mask = mask.reshape([mask.shape[0], mask.shape[1], 1])
-        return torch.cat([torch.tensor(im), mask], axis=2)
+        if bs == 1:
+          mask = outputs['instances'].get_fields()['pred_masks'][0].to('cpu')
+          mask = mask.reshape([mask.shape[0], mask.shape[1], 1])
+          return torch.cat([torch.tensor(im), mask], axis=2)
+        else:
+          mask = outputs['instances'].get_fields()['pred_masks'][0].to('cpu')
+          mask = mask.reshape([bs, mask.shape[0], mask.shape[1], 1])
+          return torch.cat([torch.tensor(im), mask], axis=3)
