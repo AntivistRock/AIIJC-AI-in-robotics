@@ -9,15 +9,15 @@ class Agent(IResource):
         self.model = model
         self.sim_com = sim_com
 
-        self.last_prediction = None
+        self.last_action = None
 
     def _update(self):
-        # prediction = self.model.predict()
-        prediciton = 7
+        # action = self.model.get_action()
+        action = 7
 
-        self.sim_com.action(Simulation.MoveRobot(prediciton))
+        self.sim_com.action(Simulation.MoveRobot(action))
 
-        self.last_prediction = prediciton
+        self.last_action = action
 
     def _load(self):
         pass

@@ -4,6 +4,8 @@ import torch
 import engine
 from .history import History
 
+from .kettle_model import KettleModel
+
 
 def to_one_hot(y, n_dims=None):
     y_tensor = torch.tensor(y, dtype=torch.int64).reshape(-1, 1)
@@ -13,10 +15,10 @@ def to_one_hot(y, n_dims=None):
 
 
 class Trainer(object):
-    def __init__(self, model):
+    def __init__(self):
 
-        self.model = model
-        self.pool = engine.EnvPool()
+        self.model = KettleModel()
+        self.pool = engine.EnvPool(self.model)
 
         self.opt = torch.optim.Adam(self.model.parameters(), lr=1e-5)
 
@@ -103,8 +105,6 @@ class Trainer(object):
         self.opt.step()
 
     def train(self, n):
-
         for _ in range(n):
-
-            history = self.pool.run(5, [self.model, 10])
+            history = self.pool.interract(5, 10)
             self.train_on_rollout(history, self.model.get_initial_state(self.pool.get_n_parallel()))
