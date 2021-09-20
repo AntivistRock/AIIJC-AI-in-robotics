@@ -17,15 +17,6 @@ class Model(object):
         self.simple_rec_agent = SimpleRecurrentAgent(num_channels, num_actions)
         # self.detectron = TeapotDetectron()
 
-    def __getattr__(self, name):
-        """Inject the client id into Bullet functions."""
-        attribute = getattr(self.simple_rec_agent, name)
-
-        if inspect.isbuiltin(attribute):
-            attribute = functools.partial(attribute)
-
-        return attribute
-
     def forward(self, images, memory):
         # image_with_mask = self.detectron.get_points(images)
         image_with_mask = unsqueeze(unsqueeze(Tensor(images), 0), 0)
