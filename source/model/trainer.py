@@ -32,10 +32,10 @@ class Trainer(object):
     def evaluate(self, n_actions=10):
         """Играет игру от начала до конца и возвращает награды на каждом шаге."""
         with torch.no_grad():
-            self.model.simple_rec_agent.eval()
+            self.model.agent.eval()
             env = engine.Environment(self.model, GUI)
             self.evaluate_history += sum(env.run(n_actions).rewards)
-        self.model.simple_rec_agent.train()
+        self.model.agent.train()
         plt.plot(self.evaluate_history, label='rewards')
         plt.plot(self.moving_average(np.array(self.evaluate_history), span=10), label='rewards ewma@10')
         plt.legend()
