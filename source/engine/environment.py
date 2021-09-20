@@ -43,6 +43,7 @@ class Environment (object):
 
     def reset(self):
         self.simulation.reset()
+        self.history = model.History()
 
     def set_model(self, new_model):
         self.agent = Agent(new_model, self.sim_com)

@@ -9,6 +9,7 @@ class EnvPool(utils.ThreadPool):
 
         def worker(env, num_steps):
             env.run(num_steps)
+            print(env.history)
             return env.history
 
         super().__init__(worker)

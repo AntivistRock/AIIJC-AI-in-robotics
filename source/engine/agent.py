@@ -20,7 +20,8 @@ class Agent(IResource):
 
         image = image_getter.get()
 
-        self.prev_memory, action = self.model.get_action(image, self.prev_memory)
+        # self.prev_memory, action = self.model.get_action(image, self.prev_memory)
+        action = 0
 
         self.sim_com.action(Simulation.MoveRobot(action))
         self.last_action = action
