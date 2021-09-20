@@ -46,8 +46,6 @@ class Simulation(IResource, utils.IComutating):
 
         self.camera = Camera(64, 64, vm_data, pm_data)
 
-        self.rewards = list()
-
         self.last_screen = None
         print("Sim loaded")
 
@@ -74,8 +72,6 @@ class Simulation(IResource, utils.IComutating):
 
         self.pb_client.stepSimulation()
 
-        self.rewards.append(self.get_reward())
-
         #sleep(1)
         #print("Sim new update.")
 
@@ -86,7 +82,7 @@ class Simulation(IResource, utils.IComutating):
         return 100 if self.kettle.delta_z > 0 else 0
 
     def get_history(self):
-        return [self.last_screen, self.rewards]
+        return [self.last_screen, self.get_reward()]
 
     class GetLastScreen(utils.IGetter):
         def call(self, sim):

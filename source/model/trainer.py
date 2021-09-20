@@ -125,9 +125,8 @@ class Trainer(object):
 
         for rollout_number in range(n):
             print("Start another rollout training")
-            history = self.pool.interract(5, 10)
-            print(f"rewards: {history.rewards}")
-            self.train_on_rollout(history, self.model.agent.get_initial_state(5))
+            history = self.pool.interract(2, 10)
+            self.train_on_rollout(history, self.model.agent.get_initial_state(2))
             print("Finish another rollout training")
             if rollout_number % 2 == 0:
                 print("Evaluating")

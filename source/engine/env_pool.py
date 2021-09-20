@@ -1,20 +1,22 @@
 import utils
+import model
 from .environment import Environment
 
 from copy import deepcopy
 
 
 class EnvPool(utils.ThreadPool):
-    def __init__(self, model):
+    def __init__(self, _model):
 
         def worker(env, num_steps):
+            print(f":> environment: {env}")
             env.run(num_steps)
             print(env.history)
             return env.history
 
         super().__init__(worker)
 
-        self.model = model
+        self.model = _model
         self.envs = [Environment(deepcopy(self.model)) for _ in range(self._n_parallel)]
 
     def interract(self, quantity, num_steps):
@@ -29,10 +31,17 @@ class EnvPool(utils.ThreadPool):
             return env
 
         arguments = [[get_env(i), num_steps] for i in range(quantity)]
-        histories = self.run(quantity, arguments)
+        returned_histories = self.run(quantity, arguments)
 
-        history = histories[0]
-        for curr_history in histories[1:-1]:
-            history.concatinate(curr_history)
+        main_history = model.History()
 
-        return history
+        for curr_history in returned_histories:
+            main_history.add(model.History.Node(
+                curr_history.actions,
+                curr_history.states,
+                curr_history.rewards
+            ))
+
+        print("========== main_history.rewards:", main_history.rewards)
+
+        return main_history
