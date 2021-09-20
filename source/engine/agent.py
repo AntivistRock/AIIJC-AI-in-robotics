@@ -7,17 +7,23 @@ class Agent(IResource):
         IResource.__init__(self)
 
         self.model = model
+        # self.prev_memory = self.model.get_initial_state(1)
+
         self.sim_com = sim_com
 
-        self.last_prediction = None
+        self.last_action = None
 
     def _update(self):
-        # prediction = self.model.forward()
-        prediciton = 1
 
-        self.sim_com.action(Simulation.MoveRobot(prediciton))
+        image_getter = Simulation.GetLastScreen()
+        self.sim_com.action(image_getter)
 
-        self.last_prediction = prediciton
+        image = image_getter.get()
+        # action = self.model.get_action(image, self.prev_memory)
+        action = 2
+
+        self.sim_com.action(Simulation.MoveRobot(action))
+        self.last_action = action
 
     def _load(self):
         pass

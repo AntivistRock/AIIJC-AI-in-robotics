@@ -23,8 +23,8 @@ class ThreadPool(object):
 
         threads = [
             self._Thread(
-                quantity_alone, self._function, arguments
-            ) for _ in range(self._n_parallel)
+                quantity_alone, self._function, arguments[i * quantity_alone: (i + 1) * quantity_alone]
+            ) for i in range(self._n_parallel)
         ]
 
         [thread.start() for thread in threads]
@@ -44,6 +44,6 @@ class ThreadPool(object):
 
         def run(self):
             self.reply = [
-                self._function(*self._arguments)
+                self._function(*self._arguments[i])
                 for i in range(self._quantity)
             ]

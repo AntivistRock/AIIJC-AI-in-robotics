@@ -261,4 +261,4 @@ pyvenv.cfg
 pip-selfcheck.json
 
 # externals
-ext/
+/ext

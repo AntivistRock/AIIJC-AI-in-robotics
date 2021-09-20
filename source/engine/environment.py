@@ -33,7 +33,7 @@ class Environment (object):
         self.agent.update()
 
         history_node = model.History.Node(
-            self.agent.last_prediction,
+            self.agent.last_action,
             *self.simulation.get_history()
         )
 
@@ -43,3 +43,6 @@ class Environment (object):
 
     def reset(self):
         self.simulation.reset()
+
+    def set_model(self, new_model):
+        self.agent = Agent(new_model, self.sim_com)
