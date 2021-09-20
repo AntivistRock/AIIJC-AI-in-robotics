@@ -7,7 +7,7 @@ from pybullet import GUI
 
 
 def main():
-    env = engine.Environment(Model(6), GUI)
+    env = engine.Environment(Model(6))
     env.run(1)
 
     detectron = TeapotDetectron()
