@@ -30,6 +30,9 @@ class ThreadPool(object):
         [thread.start() for thread in threads]
         [thread.join() for thread in threads]
 
+        return_values = [thread.reply for thread in threads]
+        print(return_values)
+
         return [(*thread.reply,)[0] for thread in threads]
 
     class _Thread(mt.Thread):

@@ -7,7 +7,7 @@ class Agent(IResource):
         IResource.__init__(self)
 
         self.model = model
-        self.prev_memory = self.model.get_initial_state(1)
+        self.prev_memory = self.model.agent.get_initial_state(1)
 
         self.sim_com = sim_com
 

@@ -23,7 +23,7 @@ class Trainer(object):
         self.model = Model(6)
         self.pool = engine.EnvPool(self.model)
 
-        self.opt = torch.optim.Adam(self.model.simple_rec_agent.parameters(), lr=1e-5)
+        self.opt = torch.optim.Adam(self.model.agent.parameters(), lr=1e-5)
 
         self.n_actions = 6
         self.moving_average = lambda x, **kw: pd.DataFrame({'x': np.asarray(x)}).x.ewm(**kw).mean().values
@@ -125,8 +125,8 @@ class Trainer(object):
 
         for rollout_number in range(n):
             print("Statr another rollout training")
-            history = self.pool.run(5, [self.model, 10])
-            self.train_on_rollout(history, self.model.get_initial_state(5))
+            history = self.pool.interract(5, 10)
+            self.train_on_rollout(history, self.model.agent.get_initial_state(5))
             print("Finish another rollout training")
             if rollout_number % 2 == 0:
                 print("Evaluating")
@@ -135,4 +135,4 @@ class Trainer(object):
 
             if rollout_number % 2 == 0:
                 print("Save weights")
-                torch.save(self.model.simple_rec_agent, f"../res/agent_weights/agent_weight_{rollout_number}.pth")
+                torch.save(self.model.agent, f"../res/agent_weights/agent_weight_{rollout_number}.pth")
