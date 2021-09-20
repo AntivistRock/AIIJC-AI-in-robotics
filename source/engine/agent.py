@@ -7,7 +7,7 @@ class Agent(IResource):
         IResource.__init__(self)
 
         self.model = model
-        # self.prev_memory = self.model.get_initial_state(1)
+        self.prev_memory = self.model.get_initial_state(1)
 
         self.sim_com = sim_com
 
@@ -19,8 +19,8 @@ class Agent(IResource):
         self.sim_com.action(image_getter)
 
         image = image_getter.get()
-        # action = self.model.get_action(image, self.prev_memory)
-        action = 2
+
+        self.prev_memory, action = self.model.get_action(image, self.prev_memory)
 
         self.sim_com.action(Simulation.MoveRobot(action))
         self.last_action = action

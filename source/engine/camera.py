@@ -19,7 +19,7 @@ class Camera(object):
             self._view_matrix.get(), self._proj_matrix.get(),
             shadow=0, lightDirection=[0, 1, 1], renderer=pb.ER_TINY_RENDERER)
 
-        return np.array(img_arr[2]).reshape(self._screen[0], self._screen[1], 4)
+        return np.array(img_arr[4]) # .reshape(self._screen[0], self._screen[1], 1)
 
     def update_view_matrix(self, setters: list):
         self._view_matrix.update_set(setters)

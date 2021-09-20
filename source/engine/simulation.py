@@ -44,11 +44,10 @@ class Simulation(IResource, utils.IComutating):
         )
         pm_data = ProjMatrixData(0.01, 10)
 
-        self.camera = Camera(128, 128, vm_data, pm_data)
+        self.camera = Camera(64, 64, vm_data, pm_data)
 
         self.last_screen = None
-        print("Waiting")
-        sleep(20)
+        print("Sim loaded")
 
     def _upload(self):
         self.robot.upload()
@@ -61,9 +60,9 @@ class Simulation(IResource, utils.IComutating):
         # ang = [ang[0] + np.pi / 2, ang[1], ang[2]]
         ang[0] += np.pi / 2
         # pos = rotate(pos, [0.1, 0.1, 0])
-
+        pos_for_camera = [pos[0], pos[1], pos[2]+0.1]
         self.camera.update_view_matrix([
-            ViewMatrixData.SetCameraPos(pos),
+            ViewMatrixData.SetCameraPos(pos_for_camera),
             ViewMatrixData.SetEulerAngles(ang),
         ])
 
@@ -72,7 +71,8 @@ class Simulation(IResource, utils.IComutating):
         self.kettle.update()
 
         self.pb_client.stepSimulation()
-        sleep(1)
+        #sleep(1)
+        #print("Sim new update.")
 
         return True
 
