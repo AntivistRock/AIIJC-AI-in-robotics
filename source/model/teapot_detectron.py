@@ -19,7 +19,7 @@ from detectron2.data import MetadataCatalog, DatasetCatalog
 
 
 class TeapotDetectron(object):
-    def __init__(self, model_path="../source/ext/teapot_weights/model_final.pth"):
+    def __init__(self, model_path="../source/ext/model_final.pth"):
         self.cfg = get_cfg()
         self.cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))
         self.cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5
