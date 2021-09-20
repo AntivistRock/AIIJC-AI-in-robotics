@@ -47,6 +47,8 @@ class Simulation(IResource, utils.IComutating):
         self.camera = Camera(128, 128, vm_data, pm_data)
 
         self.last_screen = None
+        print("Waiting")
+        sleep(20)
 
     def _upload(self):
         self.robot.upload()

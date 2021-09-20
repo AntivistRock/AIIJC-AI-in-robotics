@@ -19,11 +19,11 @@ from detectron2.data import MetadataCatalog, DatasetCatalog
 
 
 class TeapotDetectron(object):
-    def __init__(self, model_path="model/model_final.pth"):
+    def __init__(self, model_path="../source/ext/teapot_weights/model_final.pth"):
         self.cfg = get_cfg()
         self.cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))
         self.cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5
-        self.cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 8
+        self.cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 1
         self.cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1
         self.cfg.MODEL.WEIGHTS = model_path
 
@@ -38,10 +38,12 @@ class TeapotDetectron(object):
     def get_points(self, im, bs=1):
         with torch.no_grad():
             outputs = self.predictor(im)
-            outputs = outputs['instances'].get_fields()
             if bs == 1:
-                mask = outputs['instances'].get_fields()['pred_masks'][0].to('cpu')
-                mask = mask.reshape([mask.shape[0], mask.shape[1], 1])
+                print("Pred scores", outputs['instances'].get_fields()['scores'])
+                mask = outputs['instances'].get_fields()['pred_masks'].to('cpu')
+                print("Mask and im shape", mask.shape, im.shape)
+                mask = mask.reshape([mask.shape[1], mask.shape[2]]).unsqueeze(2)
+                print("Mask and im shape", mask.shape, im.shape)
                 return torch.cat([torch.tensor(im), mask], axis=2)
             else:
                 mask = outputs['instances'].get_fields()['pred_masks'][0].to('cpu')

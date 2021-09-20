@@ -62,7 +62,7 @@ class Robot(engine.ILoader):
         self._orient = [-np.pi / 2, np.pi / 2, np.pi / 2]
 
         self.arm = self.pb_client.loadURDF(
-            r"../ext/objects/ur10_robot/dependencies/ur_description/urdf/ur10_robot_with_graper.urdf",
+            r"./ext/objects/ur10_robot/dependencies/ur_description/urdf/ur10_robot_with_graper.urdf",
             basePosition=[0, 0, 0], useFixedBase=True)
 
         self.end_effector_link_index = self.pb_client.getNumJoints(self.arm) - 2
