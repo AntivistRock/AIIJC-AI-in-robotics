@@ -40,7 +40,7 @@ class TeapotDetectron(object):
             outputs = self.predictor(im)
             if bs == 1:
                 print("Pred scores", outputs['instances'].get_fields()['scores'])
-                mask = outputs['instances'].get_fields()['pred_masks'].to('cpu')
+                mask = outputs['instances'].get_fields()['pred_masks'][0].to('cpu')
                 print("Mask and im shape", mask.shape, im.shape)
                 mask = mask.reshape([mask.shape[1], mask.shape[2]]).unsqueeze(2)
                 print("Mask and im shape", mask.shape, im.shape)
