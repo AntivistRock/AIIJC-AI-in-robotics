@@ -35,18 +35,22 @@ class Robot(engine.ILoader):
         self.rotate(np.pi / 12)
 
     def move_forward(self):
+        self.prev_pos = self._pos
         move_vec = np.array([0.1, 0, 0])
         self._pos += utils.rotate(move_vec, [0, 0, -self._orient[2]])
 
     def move_back(self):
+        self.prev_pos = self._pos
         move_vec = np.array([-0.1, 0, 0])
         self._pos += utils.rotate(move_vec, [0, 0, -self._orient[2]])
 
     def move_right(self):
+        self.prev_pos = self._pos
         move_vec = np.array([0, -0.07, 0])
         self._pos += utils.rotate(move_vec, [0, 0, -self._orient[2]])
 
     def move_left(self):
+        self.prev_pos = self._pos
         move_vec = np.array([0, 0.07, 0])
         self._pos += utils.rotate(move_vec, [0, 0, -self._orient[2]])
 
@@ -81,7 +85,6 @@ class Robot(engine.ILoader):
         self._orient[0] += angle
 
     def move(self):
-        self.prev_pos = self._pos
         arm_target_pos = self.pb_client.calculateInverseKinematics(
             self.arm, self.end_effector_link_index,
             self._pos, self.pb_client.getQuaternionFromEuler(self._orient)

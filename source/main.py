@@ -12,7 +12,7 @@ from pybullet import GUI
 
 def main():
     trainer = Trainer()
-    trainer.train(100)
+    trainer.train(1000)
 
 
 if __name__ == "__main__":

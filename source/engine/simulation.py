@@ -93,10 +93,12 @@ class Simulation(IResource, utils.IComutating):
 
         reward = 0
         handle = self.kettle.get_handle_pos()
+        # print('Prev pos dist', count_distance(self.robot.prev_pos, handle))
+        # print('Curr pos dist', count_distance(self.robot._pos, handle))
         if count_distance(self.robot.prev_pos, handle) > count_distance(self.robot._pos, handle):
             reward += 1
 
-        reward += 100 if self.kettle.delta_z > 0 else 0
+        reward += 100 if self.kettle.delta_z > 0 else reward
         return reward
 
     def get_history(self):
@@ -115,6 +117,7 @@ class Simulation(IResource, utils.IComutating):
             #     sim.robot.arm, sim.robot.end_effector_link_index
             # )[1])
             # print("Orientation second:", sim.robot._orient)
+            # sim.robot.prev_pos = sim.robot._pos
             if self.value == 0:
                 sim.robot.open_gripper()
             elif self.value == 1:

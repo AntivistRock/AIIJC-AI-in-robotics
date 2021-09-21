@@ -33,7 +33,7 @@ class Trainer(object):
         with torch.no_grad():
             eval_pool = engine.EnvPool(self.model, evaluation=True)
             self.model.agent.eval()
-            history = eval_pool.interract(1, 3)
+            history = eval_pool.interract(1, 7)
             self.evaluate_history.append(sum(history.rewards[0]))
         self.model.agent.train()
         plt.plot(self.evaluate_history, label='rewards')
