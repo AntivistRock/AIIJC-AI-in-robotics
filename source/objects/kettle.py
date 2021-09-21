@@ -25,7 +25,7 @@ class Kettle(engine.ILoader):
         self.last_z = new_z
 
     def get_handle_pos(self):
-        handle_pos = self.pb_client.getBasePositionAndOrientation(self.kettle)[0]
+        handle_pos = list(self.pb_client.getBasePositionAndOrientation(self.kettle)[0])
         handle_pos[0] += 0.07
         handle_pos[2] += 0.07
         return handle_pos

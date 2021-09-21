@@ -43,11 +43,11 @@ class Robot(engine.ILoader):
         self._pos += utils.rotate(move_vec, [0, 0, -self._orient[2]])
 
     def move_right(self):
-        move_vec = np.array([0, -0.1, 0])
+        move_vec = np.array([0, -0.07, 0])
         self._pos += utils.rotate(move_vec, [0, 0, -self._orient[2]])
 
     def move_left(self):
-        move_vec = np.array([0, 0.1, 0])
+        move_vec = np.array([0, 0.07, 0])
         self._pos += utils.rotate(move_vec, [0, 0, -self._orient[2]])
 
     def move_up(self):

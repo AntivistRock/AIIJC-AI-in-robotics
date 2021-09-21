@@ -28,7 +28,6 @@ class Model(object):
             # image_with_mask = self.detectron.get_points(images)
             image_with_mask = unsqueeze(unsqueeze(Tensor(images), 0), 0).to('cuda')
             memory = (memory[0].to('cuda'), memory[1].to('cuda'))
-            print("IM WITH MSK shape:", image_with_mask.shape)
             memory, output = self.agent(memory, image_with_mask)
             output = (output[0].to('cpu'), output[1].to('cpu'))
             memory = (memory[0].to('cpu'), memory[1].to('cpu'))

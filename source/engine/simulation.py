@@ -82,10 +82,10 @@ class Simulation(IResource, utils.IComutating):
         def count_distance(pos_robot, pos_handle):
             robot_x = pos_robot[0]
             robot_y = pos_robot[1]
-            robot_z = pos_robot[3]
-            handle_x = pos_handle[1]
-            handle_y = pos_handle[2]
-            handle_z = pos_handle[3]
+            robot_z = pos_robot[2]
+            handle_x = pos_handle[0]
+            handle_y = pos_handle[1]
+            handle_z = pos_handle[2]
 
             distance = sqrt((robot_x - handle_x)**2 + (robot_y - handle_y)**2 + (robot_z - handle_z)**2)
 
@@ -96,7 +96,7 @@ class Simulation(IResource, utils.IComutating):
         if count_distance(self.robot.prev_pos, handle) > count_distance(self.robot._pos, handle):
             reward += 1
 
-        reward += 100 if self.robot.get_pos() > 0 else 0
+        reward += 100 if self.kettle.delta_z > 0 else 0
         return reward
 
     def get_history(self):
