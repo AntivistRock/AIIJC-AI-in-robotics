@@ -6,16 +6,17 @@ from copy import deepcopy
 
 
 class EnvPool(utils.ThreadPool):
-    def __init__(self, _model):
+    def __init__(self, _model, evaluation=False):
 
         def worker(env, num_steps):
-            print(f":> environment: {env}")
+            #print(f":> environment: {env}")
             env.run(num_steps)
-            print(env.history)
+            #print(env.history)
             return env.history
 
         super().__init__(worker)
-
+        if evaluation:
+            self._n_parallel = 1
         self.model = _model
         self.envs = [Environment(deepcopy(self.model)) for _ in range(self._n_parallel)]
 

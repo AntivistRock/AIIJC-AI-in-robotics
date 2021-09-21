@@ -9,12 +9,14 @@ class Model(object):
     def __init__(self, num_actions, num_channels=1):
         pass
 
-        self.agent = SimpleRecurrentAgent(num_channels, num_actions)
+        self.agent = SimpleRecurrentAgent(num_channels, num_actions).to('cuda')
         # self.detectron = TeapotDetectron()
 
     def forward(self, images, memory):
+        self.agent.train()
         # image_with_mask = self.detectron.get_points(images)
-        image_with_mask = unsqueeze(unsqueeze(Tensor(images), 0), 0)
+        image_with_mask = unsqueeze(Tensor(images), 1).to('cuda')
+        memory = (memory[0].to('cuda'), memory[1].to('cuda'))
         memory, output = self.agent(memory, image_with_mask)
 
         return memory, output
@@ -24,8 +26,11 @@ class Model(object):
         self.agent.eval()
         with no_grad():
             # image_with_mask = self.detectron.get_points(images)
-            image_with_mask = unsqueeze(unsqueeze(Tensor(images), 0), 0)
+            image_with_mask = unsqueeze(unsqueeze(Tensor(images), 0), 0).to('cuda')
+            memory = (memory[0].to('cuda'), memory[1].to('cuda'))
             print("IM WITH MSK shape:", image_with_mask.shape)
             memory, output = self.agent(memory, image_with_mask)
+            output = (output[0].to('cpu'), output[1].to('cpu'))
+            memory = (memory[0].to('cpu'), memory[1].to('cpu'))
 
             return memory, self.agent.sample_actions(output)

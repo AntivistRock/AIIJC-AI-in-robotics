@@ -11,9 +11,9 @@ from .i_model import Model
 
 
 def to_one_hot(y, n_dims=None):
-    y_tensor = torch.tensor(y, dtype=torch.int64).reshape(-1, 1)
+    y_tensor = torch.tensor(y, dtype=torch.int64).reshape(-1, 1).to('cuda')
     n_dims = n_dims if n_dims is not None else int(torch.max(y_tensor)) + 1
-    y_one_hot = torch.zeros(y_tensor.size()[0], n_dims).scatter_(1, y_tensor, 1)
+    y_one_hot = torch.zeros(y_tensor.size()[0], n_dims).to('cuda').scatter_(1, y_tensor, 1)
     return y_one_hot
 
 
@@ -32,9 +32,10 @@ class Trainer(object):
     def evaluate(self, n_actions=10):
         """Играет игру от начала до конца и возвращает награды на каждом шаге."""
         with torch.no_grad():
+            eval_pool = engine.EnvPool(self.model, evaluation=True)
             self.model.agent.eval()
-            env = engine.Environment(self.model, GUI)
-            self.evaluate_history += sum(env.run(n_actions).rewards)
+            history = eval_pool.interract(1, 3)
+            self.evaluate_history.append(sum(history.rewards[0]))
         self.model.agent.train()
         plt.plot(self.evaluate_history, label='rewards')
         plt.plot(self.moving_average(np.array(self.evaluate_history), span=10), label='rewards ewma@10')
@@ -50,8 +51,8 @@ class Trainer(object):
 
         # сконвертируем всё в torch.tensor
         states = torch.tensor(np.array(history.states), dtype=torch.float32)  # [batch_size, time, c, h, w]
-        actions = torch.tensor(np.array(history.actions), dtype=torch.int64)  # [batch_size, time]
-        rewards = torch.tensor(np.array(history.rewards), dtype=torch.float32)  # [batch_size, time]
+        actions = torch.tensor(np.array(history.actions), dtype=torch.int64).to('cuda')  # [batch_size, time]
+        rewards = torch.tensor(np.array(history.rewards), dtype=torch.float32).to('cuda')  # [batch_size, time]
         rollout_length = rewards.shape[1] - 1
 
         # теперь нужно посчитать логиты, вероятности и лог-вероятности
@@ -125,8 +126,8 @@ class Trainer(object):
 
         for rollout_number in range(n):
             print("Start another rollout training")
-            history = self.pool.interract(2, 10)
-            self.train_on_rollout(history, self.model.agent.get_initial_state(2))
+            history = self.pool.interract(5, 3)
+            self.train_on_rollout(history, self.model.agent.get_initial_state(5))
             print("Finish another rollout training")
             if rollout_number % 2 == 0:
                 print("Evaluating")

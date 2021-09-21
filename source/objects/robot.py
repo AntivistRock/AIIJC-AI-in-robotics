@@ -9,6 +9,7 @@ class Robot(engine.ILoader):
     def __init__(self, pb_client):
         engine.ILoader.__init__(self)
         self.pb_client = pb_client
+        self.prev_pos = None
 
     def get_pos(self):
         return self._pos
@@ -72,6 +73,7 @@ class Robot(engine.ILoader):
         self.joint_indices = [x[0] for x in self.joint_info if x[2] == self.pb_client.JOINT_REVOLUTE] + [9, 10]
 
         self.move()
+        self.prev_pos = self._pos
 
         time.sleep(1)
 
@@ -79,6 +81,7 @@ class Robot(engine.ILoader):
         self._orient[0] += angle
 
     def move(self):
+        self.prev_pos = self._pos
         arm_target_pos = self.pb_client.calculateInverseKinematics(
             self.arm, self.end_effector_link_index,
             self._pos, self.pb_client.getQuaternionFromEuler(self._orient)

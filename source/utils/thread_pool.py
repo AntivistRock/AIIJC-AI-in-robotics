@@ -5,7 +5,7 @@ from multiprocessing import cpu_count
 class ThreadPool(object):
     def __init__(self, function, n_parallel=cpu_count()):
         self._function = function
-        self._n_parallel = n_parallel
+        self._n_parallel = n_parallel = 5
 
     def get_n_parallel(self):
         return self._n_parallel
