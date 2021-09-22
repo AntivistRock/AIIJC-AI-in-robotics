@@ -229,6 +229,9 @@
       </geometry>
       <origin rpy="0 0 0" xyz="-0.01 0 0"/>
     </collision>
+    <inertial>
+      <mass value="0.05"/>
+    </inertial>
   </link>
   <transmission name="shoulder_pan_trans">
     <type>transmission_interface/SimpleTransmission</type>
@@ -345,6 +348,14 @@
       </geometry>
       <material name="wsg50_Gray"/>
     </visual>
+    <collision>
+      <geometry>
+        <mesh filename="package://schunk_wsg50_model/meshes/wsg50_110.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.4"/>
+    </inertial>
   </link>
   <!-- Fingers -->
   <link name="thumb_link">
@@ -355,6 +366,14 @@
       </geometry>
       <material name="wsg50_DarkGray"/>
     </visual>
+    <collision>
+      <geometry>
+        <mesh filename="package://schunk_wsg50_model/meshes/wsg_f.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.12"/>
+    </inertial>
   </link>
   <link name="index_link">
     <visual>
@@ -364,6 +383,14 @@
       </geometry>
       <material name="wsg50_DarkGray"/>
     </visual>
+    <collision>
+      <geometry>
+        <mesh filename="package://schunk_wsg50_model/meshes/wsg_f.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.12"/>
+    </inertial>
   </link>
   <joint name="thumb_joint" type="prismatic">
     <limit effort="1000.0" lower="0.0" upper="0.055" velocity="0.5"/>
