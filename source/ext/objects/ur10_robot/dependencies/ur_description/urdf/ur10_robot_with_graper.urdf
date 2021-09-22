@@ -229,9 +229,6 @@
       </geometry>
       <origin rpy="0 0 0" xyz="-0.01 0 0"/>
     </collision>
-    <inertial>
-      <mass value="0.05"/>
-    </inertial>
   </link>
   <transmission name="shoulder_pan_trans">
     <type>transmission_interface/SimpleTransmission</type>
