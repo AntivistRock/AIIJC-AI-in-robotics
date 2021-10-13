@@ -13,7 +13,7 @@ from pybullet import GUI
 
 def main():
 
-    env = engine.Environment(Model(6), GUI)
+    env = engine.Environment(Model(5), GUI)
     env.run(30)
     sleep(60)
 

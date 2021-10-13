@@ -10,22 +10,24 @@ class Robot(engine.ILoader):
         engine.ILoader.__init__(self)
         self.pb_client = pb_client
         self.prev_pos = None
+        self.maxVelocity = .35
+        self.maxForce = 200.
 
     def get_pos(self):
         return self._pos
 
     def open_gripper(self):
         self.pb_client.setJointMotorControl2(
-            self.arm, 9, self.pb_client.VELOCITY_CONTROL, targetVelocity=10, force=1000)
+            self.arm, 9, self.pb_client.VELOCITY_CONTROL, targetVelocity=20, force=1000)
         self.pb_client.setJointMotorControl2(
-            self.arm, 10, self.pb_client.VELOCITY_CONTROL, targetVelocity=10, force=1000)
+            self.arm, 10, self.pb_client.VELOCITY_CONTROL, targetVelocity=20, force=1000)
         self.pb_client.stepSimulation()
 
     def close_gripper(self):
         self.pb_client.setJointMotorControl2(
-            self.arm, 9, self.pb_client.VELOCITY_CONTROL, targetVelocity=-10, force=1000)
+            self.arm, 9, self.pb_client.VELOCITY_CONTROL, targetVelocity=-20, force=1000)
         self.pb_client.setJointMotorControl2(
-            self.arm, 10, self.pb_client.VELOCITY_CONTROL, targetVelocity=-10, force=1000)
+            self.arm, 10, self.pb_client.VELOCITY_CONTROL, targetVelocity=-20, force=1000)
         self.pb_client.stepSimulation()
 
     def rotate_left(self):
@@ -46,12 +48,12 @@ class Robot(engine.ILoader):
 
     def move_right(self):
         self.prev_pos = self._pos
-        move_vec = np.array([0, -0.07, 0])
+        move_vec = np.array([0.01, -0.07, 0])
         self._pos += utils.rotate(move_vec, [0, 0, self._orient[2]])
 
     def move_left(self):
         self.prev_pos = self._pos
-        move_vec = np.array([0, 0.07, 0])
+        move_vec = np.array([0.01, 0.07, 0])
         self._pos += utils.rotate(move_vec, [0, 0, self._orient[2]])
 
     def move_up(self):
@@ -61,6 +63,11 @@ class Robot(engine.ILoader):
     def move_down(self):
         move_vec = np.array([0, 0, -0.1])
         self._pos += utils.rotate(move_vec, [0, 0, self._orient[2]])
+
+    def TestMove(self):
+        self.rotate(-np.pi / 12)
+        # move_vec = np.array([0.1, 0.1, -0.1])
+        # self._pos += utils.rotate(move_vec, self._orient)
 
     def _load(self):
         self._pos = np.array([0.4, 0., 0.85])
@@ -88,7 +95,7 @@ class Robot(engine.ILoader):
         time.sleep(1)
 
     def rotate(self, angle):
-        self._orient[0] += angle
+        self._orient[2] += angle
 
     def move(self):
         arm_target_pos = self.pb_client.calculateInverseKinematics(
@@ -99,5 +106,7 @@ class Robot(engine.ILoader):
         self.pb_client.setJointMotorControlArray(
             self.arm, self.joint_indices,
             self.pb_client.POSITION_CONTROL,
-            targetPositions=arm_target_pos
+            targetPositions=arm_target_pos,
+            targetVelocities=[self.maxVelocity]*len(self.joint_indices),
+            forces=[self.maxForce]*len(self.joint_indices),
         )

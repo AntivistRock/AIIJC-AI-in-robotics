@@ -29,6 +29,7 @@ class Model(object):
             memory = (memory[0].to('cuda'), memory[1].to('cuda'))
             memory, output = self.agent(memory, image_with_mask)
             output = (output[0].to('cpu'), output[1].to('cpu'))
+            print(f"Вероятности: {output}")
             memory = (memory[0].to('cpu'), memory[1].to('cpu'))
 
             return memory, self.agent.sample_actions(output)

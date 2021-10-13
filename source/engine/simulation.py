@@ -49,6 +49,7 @@ class Simulation(IResource, utils.IComutating):
 
         self.last_screen = None
         print("Sim loaded")
+        # sleep(60)
 
     def _upload(self):
         self.robot.upload()
@@ -58,7 +59,7 @@ class Simulation(IResource, utils.IComutating):
 
         pos = list(state[0])
         ang = list(self.pb_client.getEulerFromQuaternion(state[1]))
-        pos_for_camera = [pos[0], pos[1], pos[2] + 0.05]
+        pos_for_camera = [pos[0] + 0.05, pos[1], pos[2] + 0.05]
         self.camera.update_view_matrix([
             ViewMatrixData.SetCameraPos(pos_for_camera),
             ViewMatrixData.SetEulerAngles(ang),
@@ -115,10 +116,10 @@ class Simulation(IResource, utils.IComutating):
             elif self.value == 2:
                 sim.robot.move_forward()
             elif self.value == 3:
-                sim.robot.move_back()
-            elif self.value == 4:
                 sim.robot.move_right()
-            elif self.value == 5:
+            elif self.value == 4:
                 sim.robot.move_left()
+            # elif self.value == 5:
+            #     sim.robot.TestMove()
 
             sim.robot.move()
