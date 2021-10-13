@@ -16,16 +16,16 @@ class Robot(engine.ILoader):
 
     def open_gripper(self):
         self.pb_client.setJointMotorControl2(
-            self.arm, 9, self.pb_client.VELOCITY_CONTROL, targetVelocity=100, force=10000)
+            self.arm, 9, self.pb_client.VELOCITY_CONTROL, targetVelocity=10, force=1000)
         self.pb_client.setJointMotorControl2(
-            self.arm, 10, self.pb_client.VELOCITY_CONTROL, targetVelocity=100, force=10000)
+            self.arm, 10, self.pb_client.VELOCITY_CONTROL, targetVelocity=10, force=1000)
         self.pb_client.stepSimulation()
 
     def close_gripper(self):
         self.pb_client.setJointMotorControl2(
-            self.arm, 9, self.pb_client.VELOCITY_CONTROL, targetVelocity=-100, force=10000)
+            self.arm, 9, self.pb_client.VELOCITY_CONTROL, targetVelocity=-10, force=1000)
         self.pb_client.setJointMotorControl2(
-            self.arm, 10, self.pb_client.VELOCITY_CONTROL, targetVelocity=-100, force=10000)
+            self.arm, 10, self.pb_client.VELOCITY_CONTROL, targetVelocity=-10, force=1000)
         self.pb_client.stepSimulation()
 
     def rotate_left(self):
@@ -37,40 +37,46 @@ class Robot(engine.ILoader):
     def move_forward(self):
         self.prev_pos = self._pos
         move_vec = np.array([0.1, 0, 0])
-        self._pos += utils.rotate(move_vec, [0, 0, -self._orient[2]])
+        self._pos += utils.rotate(move_vec, self._orient)
 
     def move_back(self):
         self.prev_pos = self._pos
         move_vec = np.array([-0.1, 0, 0])
-        self._pos += utils.rotate(move_vec, [0, 0, -self._orient[2]])
+        self._pos += utils.rotate(move_vec, [0, 0, self._orient[2]])
 
     def move_right(self):
         self.prev_pos = self._pos
         move_vec = np.array([0, -0.07, 0])
-        self._pos += utils.rotate(move_vec, [0, 0, -self._orient[2]])
+        self._pos += utils.rotate(move_vec, [0, 0, self._orient[2]])
 
     def move_left(self):
         self.prev_pos = self._pos
         move_vec = np.array([0, 0.07, 0])
-        self._pos += utils.rotate(move_vec, [0, 0, -self._orient[2]])
+        self._pos += utils.rotate(move_vec, [0, 0, self._orient[2]])
 
     def move_up(self):
         move_vec = np.array([0, 0, 0.1])
-        self._pos += utils.rotate(move_vec, [0, 0, -self._orient[2]])
+        self._pos += utils.rotate(move_vec, [0, 0, self._orient[2]])
 
     def move_down(self):
         move_vec = np.array([0, 0, -0.1])
-        self._pos += utils.rotate(move_vec, [0, 0, -self._orient[2]])
+        self._pos += utils.rotate(move_vec, [0, 0, self._orient[2]])
 
     def _load(self):
-        self._pos = np.array([0., 0.2, 0.85])
-        self._orient = [-np.pi / 2, np.pi / 2, np.pi / 2]
+        self._pos = np.array([0.4, 0., 0.85])
+        self._orient = [0, 1.570796, 0]
 
         self.arm = self.pb_client.loadURDF(
             r"./ext/objects/ur10_robot/dependencies/ur_description/urdf/ur10_robot_with_graper.urdf",
             basePosition=[0, 0, 0], useFixedBase=True)
 
-        self.end_effector_link_index = self.pb_client.getNumJoints(self.arm) - 2
+        robot_joint_info = [self.pb_client.getJointInfo(self.arm, i) for i in range(
+            self.pb_client.getNumJoints(self.arm))]
+
+        for current_joint_info in robot_joint_info:
+            print(f"Name: {current_joint_info[1]}; Number: {current_joint_info[0]}; Type {current_joint_info[2]}")
+
+        self.end_effector_link_index = 8 # self.pb_client.getNumJoints(self.arm) - 2
 
         self.joint_info = [self.pb_client.getJointInfo(self.arm, i)
                            for i in range(self.pb_client.getNumJoints(self.arm))]

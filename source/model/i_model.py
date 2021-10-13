@@ -1,13 +1,12 @@
 from .nn_model import SimpleRecurrentAgent
 # from .teapot_detectron import TeapotDetectron
 
-from torch import no_grad, Tensor, unsqueeze
+from torch import no_grad, Tensor, unsqueeze, load
 
 
 class Model(object):
 
     def __init__(self, num_actions, num_channels=1):
-        pass
 
         self.agent = SimpleRecurrentAgent(num_channels, num_actions).to('cuda')
         # self.detectron = TeapotDetectron()
@@ -33,3 +32,6 @@ class Model(object):
             memory = (memory[0].to('cpu'), memory[1].to('cpu'))
 
             return memory, self.agent.sample_actions(output)
+
+    def load_weights(self, PATH):
+        self.agent.load_state_dict(load(PATH))

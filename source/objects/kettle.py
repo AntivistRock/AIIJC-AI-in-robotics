@@ -10,12 +10,12 @@ class Kettle(engine.ILoader):
 
     def _load(self):
 
-        x_pos = np.random.uniform(-0.30, 0.16)
+        y_pos = np.random.uniform(-0.05, 0.25)
 
         self.kettle = self.pb_client.loadURDF(r"./ext/objects/kettle/urdf/kettle.urdf",
-                                              basePosition=[x_pos, 0.85, 0.85],
+                                              basePosition=[0.85, y_pos, 0.85],
                                               baseOrientation=self.pb_client.getQuaternionFromEuler(
-                                                  [np.pi / 2, 0, np.pi / 10]))
+                                                  [np.pi / 2, 0, -np.pi / 2.4]))
         self.last_z = self.get_z_coordinate()
         self.delta_z = 0
 

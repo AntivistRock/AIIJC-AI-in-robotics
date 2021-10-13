@@ -4,15 +4,21 @@ import engine
 import warnings
 warnings.filterwarnings("ignore")
 
-from model import Trainer
+from model import Trainer, Model
 import matplotlib.pyplot as plt
 
+from time import sleep
 from pybullet import GUI
 
 
 def main():
-    trainer = Trainer()
-    trainer.train(1000)
+
+    env = engine.Environment(Model(6), GUI)
+    env.run(30)
+    sleep(60)
+
+    # trainer = Trainer()
+    # trainer.train(1000)
 
 
 if __name__ == "__main__":

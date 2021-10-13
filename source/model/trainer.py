@@ -104,15 +104,15 @@ class Trainer(object):
     def train(self, n):
 
         for rollout_number in range(n):
-            print("Start another rollout training")
+            print(f"Start another rollout training. Number {rollout_number}")
             history = self.pool.interract(5, 7)
             self.train_on_rollout(history, self.model.agent.get_initial_state(5))
             print("Finish another rollout training")
-            if rollout_number % 10 == 0:
+            if rollout_number % 50 == 0:
                 print("Evaluating")
                 self.evaluate()
                 print("Finish evaluating")
 
-            if rollout_number % 10 == 0:
+            if rollout_number % 15 == 0:
                 print("Save weights")
-                torch.save(self.model.agent, f"../res/agent_weights/agent_weight_{rollout_number}.pth")
+                torch.save(self.model.agent.state_dict(), f"../res/agent_weights/agent_weight_{rollout_number}.pth")

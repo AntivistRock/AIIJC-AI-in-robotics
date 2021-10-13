@@ -33,15 +33,15 @@ class Simulation(IResource, utils.IComutating):
         self.pb_client.setRealTimeSimulation(1)
 
         self.plane = self.pb_client.loadURDF("plane.urdf")
-        self.table = self.pb_client.loadURDF("table/table.urdf", basePosition=[-0.15, 1.5, 0],
+        self.robot.load()
+        self.table = self.pb_client.loadURDF("table/table.urdf", basePosition=[1.2, 0, 0],
                                              baseOrientation=self.pb_client.getQuaternionFromEuler([0, 0, np.pi / 2]))
         self.kettle.load()
-        self.robot.load()
 
         self.pb_client.setGravity(0, 0, -9.8)
 
         vm_data = ViewMatrixData(
-            [0, 0, 0], [0, 0, 0], [0, 0, 1], [-1, 0, 0], [0, 0, 0]
+            [0, 0, 0], [0, 0, 0], [0, 0, 1], [1, 0, 0], [0, 0, 0]
         )
         pm_data = ProjMatrixData(0.01, 10)
 
@@ -54,14 +54,11 @@ class Simulation(IResource, utils.IComutating):
         self.robot.upload()
 
     def _update(self):
-        state = self.pb_client.getLinkState(self.robot.arm, self.robot.end_effector_link_index)
+        state = self.pb_client.getLinkState(self.robot.arm, 8)
 
-        pos = self.robot.get_pos()
+        pos = list(state[0])
         ang = list(self.pb_client.getEulerFromQuaternion(state[1]))
-        # ang = [ang[0] + np.pi / 2, ang[1], ang[2]]
-        ang[0] += np.pi / 2
-        # pos = rotate(pos, [0.1, 0.1, 0])
-        pos_for_camera = [pos[0], pos[1], pos[2]+0.1]
+        pos_for_camera = [pos[0], pos[1], pos[2] + 0.05]
         self.camera.update_view_matrix([
             ViewMatrixData.SetCameraPos(pos_for_camera),
             ViewMatrixData.SetEulerAngles(ang),
@@ -111,13 +108,6 @@ class Simulation(IResource, utils.IComutating):
     class MoveRobot(utils.ISetter):
 
         def call(self, sim):
-            #  update orientation before action
-            # print("Orientation first:", sim.robot._orient, '\n')
-            # sim.robot._orient = sim.robot.pb_client.getEulerFromQuaternion(sim.robot.pb_client.getLinkState(
-            #     sim.robot.arm, sim.robot.end_effector_link_index
-            # )[1])
-            # print("Orientation second:", sim.robot._orient)
-            # sim.robot.prev_pos = sim.robot._pos
             if self.value == 0:
                 sim.robot.open_gripper()
             elif self.value == 1:

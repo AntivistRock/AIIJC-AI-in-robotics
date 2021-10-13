@@ -22,10 +22,8 @@ class ViewMatrixData(utils.IComutating):
         self.offset = offset
 
     def get(self) -> ContractVMArgs:
-        angles = [-self.angles[0], -self.angles[1], -self.angles[2]]
-
-        orient_rot = utils.rotate(self.orient, angles)
-        offset_rot = utils.rotate(self.offset, angles)
+        orient_rot = utils.rotate(self.orient, self.angles)
+        offset_rot = utils.rotate(self.offset, self.angles)
 
         camera_pos = self.position + offset_rot
         target_pos = camera_pos + orient_rot
