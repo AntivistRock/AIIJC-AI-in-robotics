@@ -16,11 +16,3 @@ class History(object):
         self.states.append(node.state)
         self.rewards.append(node.reward)
         self.actions.append(node.action)
-
-    def concatinate(self, other_history):
-
-        # np.append(self.states, other_history.states)
-        # np.append(self.actions, other_history.actions)
-        # np.append(self.rewards, other_history.rewards)
-
-        other_history = None

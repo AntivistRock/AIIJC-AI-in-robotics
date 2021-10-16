@@ -1,6 +1,8 @@
 from .agent import Agent
 
-from source.model import Model
+from .scenes import IScene, ISceneCreator
+
+from source.model import Model, History
 from source.utils import add_timer
 
 import os
@@ -13,19 +15,29 @@ class Environment (object):
         self.pb_client = pb_client
 
         self.agent = Agent(model)
-        self.scene = None
+        self.scene: IScene
 
     @add_timer
-    def run(self, n_steps):
+    def run(self, n_steps, history: History):
         if self.scene:
             print(f"> environment::run \n\tpid: {os.getpid()} \n\tppid: {os.getppid()}")
             self.reset()
             for _ in range(n_steps):
-                # self.scene.update_camera()
+                # update scene
+                self.scene.update_camera()
                 self.scene.update()
-                # action = self.agent.update(self.scene.get_image())
-                # self.scene.robot.move(action)
+                # move robot
+                state = self.scene.get_state()
+                action = self.agent.get_action(state)
+                self.scene.robot.action(action)
+                # update pybullet simulation
                 self.pb_client.stepSimulation()
+                # write history
+                history.add(History.Node(
+                    action=action,
+                    state=state,
+                    reward=self.scene.get_reward()
+                ))
         else:
             raise RuntimeWarning("didn't find scene")
 
@@ -34,5 +46,5 @@ class Environment (object):
         self.scene.upload()
         self.scene.load()
 
-    def set_scene(self, scene_creator):
-        self.scene = scene_creator(self.pb_client)
+    def set_scene(self, scene_creator: ISceneCreator):
+        self.scene = scene_creator.construct(self.pb_client)

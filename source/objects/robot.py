@@ -44,6 +44,9 @@ class Robot(engine.ILoader):
     def move(self, vec):
         self.pos += utils.rotate(vec, self.orient)
 
+    def action(self, action):
+        pass
+
     def move_gripper(self, velocity):
         self.pb_client.setJointMotorControl2(
             self.arm, 9, self.pb_client.VELOCITY_CONTROL, targetVelocity=velocity, force=500)

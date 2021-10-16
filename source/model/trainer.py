@@ -4,7 +4,7 @@ from pybullet import GUI
 import pandas as pd
 import matplotlib.pyplot as plt
 
-import engine
+import source.engine as engine
 
 from .history import History
 from .i_model import Model
@@ -125,7 +125,7 @@ class Trainer(object):
 
         for rollout_number in range(n):
             print("Start another rollout training")
-            history = self.pool.interract(2, 10)
+            history = self.pool.play(2, 10, engine.scenes.AutoMoveAndGrepScene)
             self.train_on_rollout(history, self.model.agent.get_initial_state(2))
             print("Finish another rollout training")
             if rollout_number % 2 == 0:

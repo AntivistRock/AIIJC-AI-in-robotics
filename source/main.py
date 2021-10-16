@@ -7,7 +7,7 @@ from source.model import Model
 def main():
     model = Model(6)
 
-    env_pool = EnvPool(model)
+    env_pool = EnvPool(model, True)
     env_pool.play(1, 1000, AutoMoveAndGrepScene)
 
 

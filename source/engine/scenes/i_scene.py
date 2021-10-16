@@ -10,7 +10,7 @@ from time import sleep
 
 
 class IScene(IResource):
-    def __init__(self, pb_client: BulletClient):
+    def __init__(self, pb_client: BulletClient) -> None:
 
         IResource.__init__(self)
 
@@ -23,7 +23,6 @@ class IScene(IResource):
         self.kettle = objects.Kettle(self.pb_client)
 
         # camera
-        '''
         self.camera = camera.Camera(
             pixel_width=64,
             pixel_height=64,
@@ -35,12 +34,11 @@ class IScene(IResource):
                 offset=[0, 0, 0]
             ),
             proj_matrix_data=camera.ProjMatrixData(
-                near_plane=10,
+                near_plane=0.01,
                 far_plane=20,
                 fov=60
             )
         )
-        '''
 
     def _load(self):
         self.pb_client.resetSimulation()
@@ -62,13 +60,20 @@ class IScene(IResource):
         self.table.upload()
         self.plane.upload()
 
-    '''
-    def update_camera(self):
+    def update_camera(self) -> None:
         self.camera.view_matrix.data.position = self.robot.pos
         self.camera.view_matrix.data.angles = self.robot.orient
 
-    def get_image(self):
+    def get_state(self):
         return self.camera.snapshot()
-    '''
+
+    def get_reward(self) -> int:
+        raise NotImplementedError()
 
 
+class ISceneCreator(object):
+    def __init__(self, scene_creator):
+        self.scene_creator = scene_creator
+
+    def construct(self, pb_client: BulletClient) -> IScene:
+        return self.scene_creator(pb_client)
