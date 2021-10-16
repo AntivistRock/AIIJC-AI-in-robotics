@@ -1,18 +1,14 @@
-import engine
-#from model.teapot_detectron import TeapotDetectron
+from source.engine import EnvPool
+from source.engine.scenes import AutoMoveAndGrepScene
 
-import warnings
-warnings.filterwarnings("ignore")
-
-from model import Trainer
-import matplotlib.pyplot as plt
-
-from pybullet import GUI
+from source.model import Model
 
 
 def main():
-    trainer = Trainer()
-    trainer.train(1000)
+    model = Model(6)
+
+    env_pool = EnvPool(model)
+    env_pool.play(1, 1000, AutoMoveAndGrepScene)
 
 
 if __name__ == "__main__":

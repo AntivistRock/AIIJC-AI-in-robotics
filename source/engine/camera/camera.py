@@ -9,17 +9,14 @@ class Camera(object):
     def __init__(self, pixel_width: int, pixel_height: int,
                  view_matrix_data: ViewMatrixData,
                  proj_matrix_data: ProjMatrixData):
-        self._screen = (pixel_width, pixel_height)
-        self._view_matrix = ViewMatrix(view_matrix_data)
-        self._proj_matrix = ProjMatrix(proj_matrix_data, self._screen)
+        self.screen = (pixel_width, pixel_height)
+        self.view_matrix = ViewMatrix(view_matrix_data)
+        self.proj_matrix = ProjMatrix(proj_matrix_data, self.screen)
 
     def snapshot(self):
         img_arr = pb.getCameraImage(
-            self._screen[0], self._screen[1],
-            self._view_matrix.get(), self._proj_matrix.get(),
+            self.screen[0], self.screen[1],
+            self.view_matrix.get(), self.proj_matrix.get(),
             shadow=0, lightDirection=[0, 1, 1], renderer=pb.ER_TINY_RENDERER)
 
-        return np.array(img_arr[4]) # .reshape(self._screen[0], self._screen[1], 1)
-
-    def update_view_matrix(self, setters: list):
-        self._view_matrix.update_set(setters)
+        return np.array(img_arr[4])

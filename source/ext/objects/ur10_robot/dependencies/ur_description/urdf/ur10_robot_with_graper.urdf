@@ -16,7 +16,7 @@
       <timeout>5</timeout>
       <powerStateTopic>power_state</powerStateTopic>
       <powerStateRate>10.0</powerStateRate>
-      <fullChargeCapacity>87.78</fullChargeCapacity>     
+      <fullChargeCapacity>87.78</fullChargeCapacity>
       <dischargeRate>-474</dischargeRate>
       <chargeRate>525</chargeRate>
       <dischargeVoltage>15.52</dischargeVoltage>
@@ -229,6 +229,10 @@
       </geometry>
       <origin rpy="0 0 0" xyz="-0.01 0 0"/>
     </collision>
+    <inertial>
+       <mass value="0.05"/>
+       <inertia ixx="0.0003" ixy="0.0" ixz="0.0" iyy="0.0003" iyz="0.0" izz="0.0003"/>
+    </inertial>
   </link>
   <transmission name="shoulder_pan_trans">
     <type>transmission_interface/SimpleTransmission</type>
@@ -319,7 +323,7 @@
   <!-- Frame coincident with all-zeros TCP on UR controller -->
   <link name="tool0"/>
   <joint name="wrist_3_link-tool0_fixed_joint" type="fixed">
-    <origin rpy="-1.57079632679 0 0" xyz="0 0.0922 0"/>
+    <origin rpy="-1.570796 0 0" xyz="0 0.0922 0"/>
     <parent link="wrist_3_link"/>
     <child link="tool0"/>
   </joint>
@@ -351,7 +355,8 @@
       </geometry>
     </collision>
     <inertial>
-      <mass value="0.4"/>
+       <mass value="0.9"/>
+       <inertia ixx="0.000028333" ixy="0.0" ixz="0.0" iyy="0.00010833" iyz="0.0" izz="0.00012167"/>
     </inertial>
   </link>
   <!-- Fingers -->
@@ -369,7 +374,8 @@
       </geometry>
     </collision>
     <inertial>
-      <mass value="0.12"/>
+       <mass value="0.15"/>
+       <inertia ixx="0.00008583" ixy="0.0" ixz="0.0" iyy="0.00008583" iyz="0.0" izz="0.000005"/>
     </inertial>
   </link>
   <link name="index_link">
@@ -386,7 +392,8 @@
       </geometry>
     </collision>
     <inertial>
-      <mass value="0.12"/>
+       <mass value="0.15"/>
+       <inertia ixx="0.00008583" ixy="0.0" ixz="0.0" iyy="0.00008583" iyz="0.0" izz="0.000005"/>
     </inertial>
   </link>
   <joint name="thumb_joint" type="prismatic">
@@ -403,9 +410,8 @@
   </joint>
   <!-- Attach the gripper to the root link -->
   <joint name="gripper_joint" type="fixed">
-    <parent link="ee_link"/>
+    <parent link="tool0"/>
     <child link="gripper_link"/>
-    <origin rpy="-1.570796 0 0" xyz="0 0 0"/>
+    <origin rpy="-1.570796 0 -1.570796" xyz="0 0 0"/>
   </joint>
 </robot>
-

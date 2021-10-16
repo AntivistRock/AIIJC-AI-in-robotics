@@ -1,6 +1,7 @@
 import pybullet as pb
 
-import utils
+from source.utils import rotate
+
 from .i_matrix import IMatrix
 
 
@@ -11,7 +12,7 @@ class ContractVMArgs(object):
         self.vector_up = up_vector
 
 
-class ViewMatrixData(utils.IComutating):
+class ViewMatrixData(object):
     def __init__(self, position, angles, up_vector, orient, offset):
         super().__init__()
 
@@ -24,8 +25,8 @@ class ViewMatrixData(utils.IComutating):
     def get(self) -> ContractVMArgs:
         angles = [-self.angles[0], -self.angles[1], -self.angles[2]]
 
-        orient_rot = utils.rotate(self.orient, angles)
-        offset_rot = utils.rotate(self.offset, angles)
+        orient_rot = rotate(self.orient, angles)
+        offset_rot = rotate(self.offset, angles)
 
         camera_pos = self.position + offset_rot
         target_pos = camera_pos + orient_rot
@@ -33,40 +34,17 @@ class ViewMatrixData(utils.IComutating):
 
         return ContractVMArgs(camera_pos, target_pos, up_vector)
 
-    class SetCameraPos(utils.ISetter):
-        def call(self, data):
-            data.position = self.value
-
-    class SetEulerAngles(utils.ISetter):
-        def call(self, data):
-            data.angles = self.value
-
-    class SetUpVector(utils.ISetter):
-        def call(self, data):
-            data.up_vector = self.value
-
-    class SetOrient(utils.ISetter):
-        def call(self, data):
-            data.orient = self.value
-
 
 class ViewMatrix(IMatrix):
 
     def __init__(self, data: ViewMatrixData):
-        self._data = data
-        self.data_com = data.get_com()
+        self.data = data
         super().__init__()
 
     def _update(self):
-        args = self._data.get()
+        args = self.data.get()
         self._matrix = pb.computeViewMatrix(
             args.camera_pos,
             args.target_pos,
             args.vector_up
         )
-
-    def update_set(self, setters):
-        for setter in setters:
-            self.data_com.action(setter)
-
-        self._update()

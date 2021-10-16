@@ -1,49 +1,38 @@
 from .agent import Agent
-from .simulation import Simulation
 
-import model
+from source.model import Model
+from source.utils import add_timer
 
-import pybullet as pb
-from pybullet_utils import bullet_client
+import os
 
 
 class Environment (object):
+    @add_timer
+    def __init__(self, pb_client, model: Model):
 
-    def __init__(self, i_model, connection_mode=pb.DIRECT):
-        super().__init__()
+        self.pb_client = pb_client
 
-        self.pb_client = bullet_client.BulletClient(connection_mode)
+        self.agent = Agent(model)
+        self.scene = None
 
-        self.simulation = Simulation(self.pb_client)
-        self.sim_com = self.simulation.get_com()
+    @add_timer
+    def run(self, n_steps):
+        if self.scene:
+            print(f"> environment::run \n\tpid: {os.getpid()} \n\tppid: {os.getppid()}")
+            self.reset()
+            for _ in range(n_steps):
+                # self.scene.update_camera()
+                self.scene.update()
+                # action = self.agent.update(self.scene.get_image())
+                # self.scene.robot.move(action)
+                self.pb_client.stepSimulation()
+        else:
+            raise RuntimeWarning("didn't find scene")
 
-        self.agent = Agent(i_model, self.sim_com)
-
-        self.history = model.History()
-
-    def run(self, max_num_upd):
-        self.reset()
-
-        for _ in range(max_num_upd):
-            if not self.update():
-                break
-      
-    def update(self):
-        is_running = self.simulation.update()
-        self.agent.update()
-
-        history_node = model.History.Node(
-            self.agent.last_action,
-            *self.simulation.get_history()
-        )
-
-        self.history.add(history_node)
-
-        return is_running
-
+    @add_timer
     def reset(self):
-        self.simulation.reset()
-        self.history = model.History()
+        self.scene.upload()
+        self.scene.load()
 
-    def set_model(self, new_model):
-        self.agent = Agent(new_model, self.sim_com)
+    def set_scene(self, scene_creator):
+        self.scene = scene_creator(self.pb_client)
