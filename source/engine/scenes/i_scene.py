@@ -1,19 +1,14 @@
-from source.engine import IResource
+from source.engine import IResource, settings
 import source.engine.camera as camera
 
 import source.objects as objects
 
-from source.utils import rotate
-
 from pybullet_data import getDataPath
 from pybullet_utils.bullet_client import BulletClient
-
-from time import sleep
 
 
 class IScene(IResource):
     def __init__(self, pb_client: BulletClient) -> None:
-
         IResource.__init__(self)
 
         self.pb_client = pb_client
@@ -48,14 +43,14 @@ class IScene(IResource):
         self.pb_client.setAdditionalSearchPath(getDataPath())
         self.pb_client.setGravity(0, 0, -9.8)
         self.pb_client.setRealTimeSimulation(1)
-        self.pb_client.setTimeStep(0.1)
+        self.pb_client.setTimeStep(settings.TIME_STEP)
         # load objects
         self.plane.load()
         self.robot.load()
         self.table.load()
         self.kettle.load()
-        # set camera pos
-        self.camera.view_matrix.data.position, _ = self.robot.get_realsense_link_state()
+
+        self.update_camera()
 
     def _upload(self):
         self.robot.upload()

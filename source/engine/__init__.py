@@ -7,3 +7,4 @@ from .environment import Environment
 from .bullet_client import BulletClient
 
 from . import scenes
+from . import settings

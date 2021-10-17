@@ -8,7 +8,6 @@ from time import sleep
 class Robot(engine.ILoader):
 
     def _load(self):
-
         self.pos = np.array([0.4, 0, 0.85])
         self.orient = [0, -np.pi / 2, 0]
 
@@ -19,14 +18,12 @@ class Robot(engine.ILoader):
         self.end_effector_link_index = 8
         self.realsense_camera_link_index = 17
 
-        self.joint_info = [self.pb_client.getJointInfo(self.arm, i)
-                           for i in range(self.pb_client.getNumJoints(self.arm))]
-        self.joint_indices = [x[0] for x in self.joint_info if x[2] == self.pb_client.JOINT_REVOLUTE] + [9, 10]
+        joint_info = [self.pb_client.getJointInfo(self.arm, i)
+                      for i in range(self.pb_client.getNumJoints(self.arm))]
+        self.joint_indices = [x[0] for x in joint_info if x[2] == self.pb_client.JOINT_REVOLUTE] + [9, 10]
 
-        for current_joint_info in self.joint_info:
-            print(f"Name: {current_joint_info[1]}; Number: {current_joint_info[0]}; Type {current_joint_info[2]}")
-
-
+        # for current_joint_info in joint_info:
+        #     print(f"Name: {current_joint_info[1]}; Number: {current_joint_info[0]}; Type {current_joint_info[2]}")
 
         self.update()
 
@@ -45,7 +42,7 @@ class Robot(engine.ILoader):
             targetPositions=arm_target_pos
         )
 
-        sleep(1)
+        sleep(engine.settings.ROBOT_ACTION_DELTA_TIME)
 
     def get_realsense_link_state(self):
         state = self.pb_client.getLinkState(self.arm, self.realsense_camera_link_index)
@@ -56,8 +53,8 @@ class Robot(engine.ILoader):
     def action(self, action):
         pass
 
-    def move(self, vec):
-        self.pos += utils.rotate(vec, self.orient)
+    def move(self, vec: np.array):
+        self.pos += utils.rotate(vec * engine.settings.robot_move_speed_vec, self.orient)
 
     def grip(self, cmd):
         self.pb_client.setJointMotorControl2(

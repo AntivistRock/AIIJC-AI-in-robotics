@@ -17,10 +17,10 @@ class AutoMoveAndGrepScene(IScene):
                 # self.robot.grip(0.5)
                 self.is_gripped = True
             else:
-                self.robot.move([0.05, 0, 0])
+                self.robot.move([1, 0, 0])
         else:
             if self.robot.pos[2] < 1.3:
-                self.robot.move([0, 0.05, 0])
+                self.robot.move([0, 1, 0])
             else:
                 return False
 
