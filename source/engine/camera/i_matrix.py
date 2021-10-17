@@ -1,9 +1,10 @@
 class IMatrix(object):
     def __init__(self):
-        self._update()
-
-    def _update(self):
         self._matrix = None
+        self.update()
+
+    def update(self):
+        raise NotImplementedError()
 
     def get(self):
         return self._matrix

@@ -41,7 +41,7 @@ class ViewMatrix(IMatrix):
         self.data = data
         super().__init__()
 
-    def _update(self):
+    def update(self):
         args = self.data.get()
         self._matrix = pb.computeViewMatrix(
             args.camera_pos,

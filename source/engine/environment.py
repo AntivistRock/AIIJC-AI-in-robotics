@@ -25,13 +25,12 @@ class Environment (object):
             for _ in range(n_steps):
                 # update scene
                 self.scene.update_camera()
-                self.scene.update()
+                if not self.scene.update():
+                    break
                 # move robot
                 state = self.scene.get_state()
                 action = self.agent.get_action(state)
                 self.scene.robot.action(action)
-                # update pybullet simulation
-                self.pb_client.stepSimulation()
                 # write history
                 history.add(History.Node(
                     action=action,

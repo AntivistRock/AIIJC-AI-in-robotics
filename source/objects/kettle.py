@@ -12,10 +12,11 @@ class Kettle(engine.ILoader):
         # y_pos = np.random.uniform(-0.5, 0.25)
         y_pos = 0
 
-        self.kettle = self.pb_client.loadURDF(r"./source/ext/objects/kettle/urdf/kettle.urdf",
-                                              basePosition=[0.9, y_pos, 0.85],
-                                              baseOrientation=self.pb_client.getQuaternionFromEuler(
-                                                  [np.pi / 2, 0, -np.pi / 2.4]))
+        self.kettle = self.pb_client.loadURDF(
+            r"./source/ext/objects/kettle/urdf/kettle.urdf",
+            basePosition=[0.85, y_pos, 0.86],
+            baseOrientation=self.pb_client.getQuaternionFromEuler([np.pi / 2, 0, -np.pi / 2.4])
+        )
 
     def _upload(self):
         pass

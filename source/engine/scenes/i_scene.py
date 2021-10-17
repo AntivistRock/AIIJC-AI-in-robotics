@@ -3,6 +3,8 @@ import source.engine.camera as camera
 
 import source.objects as objects
 
+from source.utils import rotate
+
 from pybullet_data import getDataPath
 from pybullet_utils.bullet_client import BulletClient
 
@@ -30,12 +32,12 @@ class IScene(IResource):
                 position=[0, 0, 0],
                 angles=[0, 0, 0],
                 up_vector=[0, 0, 1],
-                orient=[1, 0, 0],
+                orient=[0, 0, 1],
                 offset=[0, 0, 0]
             ),
             proj_matrix_data=camera.ProjMatrixData(
                 near_plane=0.01,
-                far_plane=20,
+                far_plane=1,
                 fov=60
             )
         )
@@ -46,13 +48,12 @@ class IScene(IResource):
         self.pb_client.setAdditionalSearchPath(getDataPath())
         self.pb_client.setGravity(0, 0, -9.8)
         self.pb_client.setRealTimeSimulation(1)
+        self.pb_client.setTimeStep(0.1)
         # load objects
         self.plane.load()
         self.robot.load()
         self.table.load()
         self.kettle.load()
-
-        sleep(1)
 
     def _upload(self):
         self.robot.upload()
@@ -61,8 +62,10 @@ class IScene(IResource):
         self.plane.upload()
 
     def update_camera(self) -> None:
-        self.camera.view_matrix.data.position = self.robot.pos
-        self.camera.view_matrix.data.angles = self.robot.orient
+        pos, orient = self.robot.get_camera_pos()
+        self.camera.view_matrix.data.position = pos
+        self.camera.view_matrix.data.orient = orient
+        self.camera.view_matrix.update()
 
     def get_state(self):
         return self.camera.snapshot()

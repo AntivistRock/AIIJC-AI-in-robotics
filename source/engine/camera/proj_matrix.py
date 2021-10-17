@@ -16,7 +16,7 @@ class ProjMatrix(IMatrix):
         self.aspect = screen[0] / screen[1]
         super().__init__()
 
-    def _update(self):
+    def update(self):
         self._matrix = pb.computeProjectionMatrixFOV(
             self.data.fov, self.aspect,
             self.data.plane[0], self.data.plane[1]
