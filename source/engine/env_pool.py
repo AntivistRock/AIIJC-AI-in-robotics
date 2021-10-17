@@ -1,29 +1,40 @@
-import utils
 from .environment import Environment
+from .bullet_client import BulletClient
 
-from copy import deepcopy
+from source.model import Model
+from source.model import History
+
+from source.utils import add_timer
+
+import pybullet as pb
 
 
-class EnvPool(utils.ThreadPool):
-    def __init__(self, model):
+class EnvPool(object):
+    @add_timer
+    def __init__(self, model: Model, is_view_gui: bool = False) -> None:
 
-        def worker(env, num_steps):
-            env.run(num_steps)
-            return env.history
+        self.pb_client = None
+        self.pb_server = None
 
-        super().__init__(worker)
+        if is_view_gui:
+            self.pb_client = BulletClient(pb.GUI)
+        else:
+            self.pb_server = BulletClient(pb.SHARED_MEMORY_SERVER, 1234)
+            self.pb_client = BulletClient(pb.SHARED_MEMORY, 1234)
 
-        self.model = model
-        self.envs = [Environment(None) for _ in range(self._n_parallel)]
+        self.environment = Environment(self.pb_client, model)
 
-    def interract(self, quantity, num_steps):
+    def __del__(self) -> None:
+        if self.pb_client:
+            del self.pb_client
+        if self.pb_server:
+            del self.pb_server
 
-        [env.set_model(deepcopy(self.model)) for env in self.envs]
-        arguments = [[self.envs[i], num_steps] for i in range(self._n_parallel)]
-        histories = self.run(quantity, arguments)
-
-        history = histories[0]
-        for curr_history in histories[1:-1]:
-            history.concatinate(curr_history)
+    @add_timer
+    def play(self, quantity: int, n_steps: int, scene_creator) -> History:
+        self.environment.set_scene(scene_creator)
+        history = History()
+        for _ in range(quantity):
+            self.environment.run(n_steps, history)
 
         return history

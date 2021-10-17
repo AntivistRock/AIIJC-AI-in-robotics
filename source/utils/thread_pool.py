@@ -10,7 +10,7 @@ class ThreadPool(object):
     def get_n_parallel(self):
         return self._n_parallel
 
-    def run(self, quantity, arguments=None, enable_warnings=False):
+    def run(self, quantity, arguments=None, enable_warnings=True):
 
         if enable_warnings:
             if quantity % self._n_parallel != 0:
@@ -30,7 +30,12 @@ class ThreadPool(object):
         [thread.start() for thread in threads]
         [thread.join() for thread in threads]
 
-        return [(*thread.reply,)[0] for thread in threads]
+        return_values = list()
+        for thread in threads:
+            for i in range(quantity_alone):
+                return_values.append(thread.reply[i])
+
+        return return_values
 
     class _Thread(mt.Thread):
         def __init__(self, quantity, function, arguments):
@@ -45,5 +50,4 @@ class ThreadPool(object):
         def run(self):
             self.reply = [
                 self._function(*self._arguments[i])
-                for i in range(self._quantity)
-            ]
+                for i in range(self._quantity)]

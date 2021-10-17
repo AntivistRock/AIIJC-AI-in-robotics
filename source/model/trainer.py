@@ -4,9 +4,9 @@ from pybullet import GUI
 import pandas as pd
 import matplotlib.pyplot as plt
 
-import engine
-from .history import History
+import source.engine as engine
 
+from .history import History
 from .i_model import Model
 
 
@@ -23,7 +23,7 @@ class Trainer(object):
         self.model = Model(6)
         self.pool = engine.EnvPool(self.model)
 
-        self.opt = torch.optim.Adam(self.model.simple_rec_agent.parameters(), lr=1e-5)
+        self.opt = torch.optim.Adam(self.model.agent.parameters(), lr=1e-5)
 
         self.n_actions = 6
         self.moving_average = lambda x, **kw: pd.DataFrame({'x': np.asarray(x)}).x.ewm(**kw).mean().values
@@ -32,10 +32,10 @@ class Trainer(object):
     def evaluate(self, n_actions=10):
         """Играет игру от начала до конца и возвращает награды на каждом шаге."""
         with torch.no_grad():
-            self.model.simple_rec_agent.eval()
+            self.model.agent.eval()
             env = engine.Environment(self.model, GUI)
             self.evaluate_history += sum(env.run(n_actions).rewards)
-        self.model.simple_rec_agent.train()
+        self.model.agent.train()
         plt.plot(self.evaluate_history, label='rewards')
         plt.plot(self.moving_average(np.array(self.evaluate_history), span=10), label='rewards ewma@10')
         plt.legend()
@@ -124,12 +124,15 @@ class Trainer(object):
     def train(self, n):
 
         for rollout_number in range(n):
-
-            history = self.pool.run(5, [self.model, 10])
-            self.train_on_rollout(history, self.model.get_initial_state(5))
-
-            if rollout_number % 500 == 0:
+            print("Start another rollout training")
+            history = self.pool.play(2, 10, engine.scenes.AutoMoveAndGrepScene)
+            self.train_on_rollout(history, self.model.agent.get_initial_state(2))
+            print("Finish another rollout training")
+            if rollout_number % 2 == 0:
+                print("Evaluating")
                 self.evaluate()
+                print("Finish evaluating")
 
-            if rollout_number % 2000 == 0:
-                torch.save(self.model.simple_rec_agent, f"../res/agent_weights/agent_weight_{rollout_number}.pth")
+            if rollout_number % 2 == 0:
+                print("Save weights")
+                torch.save(self.model.agent, f"../res/agent_weights/agent_weight_{rollout_number}.pth")

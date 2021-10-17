@@ -3,13 +3,10 @@ from .i_resource import IResource
 
 class ILoader(IResource):
 
-    # @must_be_implemented(error_msg="Loader должен уметь загружать ресурс")
-    def _load(self):
-        pass
+    def __init__(self, pb_client):
+        IResource.__init__(self)
 
-    # @must_be_implemented(error_msg="Loader должен уметь выгружать ресурс")
-    def _upload(self):
-        pass
+        self.pb_client = pb_client
 
     def _update(self):
         pass

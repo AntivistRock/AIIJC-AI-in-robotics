@@ -2,6 +2,19 @@ import numpy as np
 from numpy import cos, sin
 
 
+def is_equal_arrs(arr1, arr2, e):
+    if len(arr1) != len(arr2):
+        return False
+
+    is_equal = True
+    for i in range(len(arr1)):
+        if abs(arr1[i] - arr2[i]) > e:
+            is_equal = False
+            break
+
+    return is_equal
+
+
 def rotate(vec: np.array, ang: np.array):
     a, b, c = ang
 

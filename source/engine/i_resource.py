@@ -9,8 +9,8 @@ class IResource(object):
 
     def load(self):
         if not self._is_load:
-            self._load()
             self._is_load = True
+            self._load()
 
     def upload(self):
         if self._is_load:
@@ -19,8 +19,7 @@ class IResource(object):
 
     def update(self):
         if not self._is_load:
-            self.load()
-
+            raise RuntimeError("Resource isn't loaded")
         return self._update()
 
     # @must_be_implemented

@@ -1,21 +1,14 @@
-import engine
-from model.teapot_detectron import TeapotDetectron
-from model import Model
-import matplotlib.pyplot as plt
+from source.engine import EnvPool
+from source.model import Model
 
-from pybullet import GUI
+import source.engine.scenes as scenes
 
 
 def main():
-    env = engine.Environment(Model(6))
-    env.run(1)
+    model = Model(6)
 
-    detectron = TeapotDetectron()
-    plt.imshow(env.history.states[0].astype("int32"))
-    plt.show()
-    print("Image shape:", env.history.states[0].reshape((4, 128, 128)).shape)
-    image_with_mask = detectron.get_points(env.history.states[0][...,:3].astype("float32"))
-    print(image_with_mask.size())
+    pool = EnvPool(model, True)
+    pool.play(1, 100, scenes.AutoSceneCreator())
 
 
 if __name__ == "__main__":
