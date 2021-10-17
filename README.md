@@ -33,6 +33,8 @@ $ cd ./source
 $ python main.py
 ```
 
+### [Ссылка на веса детектрона](https://drive.google.com/file/d/1h6XcKuERQSBsLNzEocXr39RAgqsnKIqJ/view)
+
 ### Полезные ссылки:
 * [Семинар Тинькофф по Reinforce](https://colab.research.google.com/drive/1U3-rixEJSEO7oNbjKVjFIEjVt0DiDiYs?usp=sharing)
 * [Семинар Тинькофф по Actor Critic](https://colab.research.google.com/drive/1SFdsiSNGcisU51-28a2dZyO_k5g2PNKR?usp=sharing)
