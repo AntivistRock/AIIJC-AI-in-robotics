@@ -32,8 +32,8 @@ class IScene(IResource):
                 position=[0, 0, 0],
                 angles=[0, 0, 0],
                 up_vector=[0, 0, 1],
-                orient=[0, 0, 1],
-                offset=[0, 0, 0]
+                orient=[-1, 0, 0],
+                offset=[0, 0.01, 0]
             ),
             proj_matrix_data=camera.ProjMatrixData(
                 near_plane=0.01,
@@ -54,6 +54,8 @@ class IScene(IResource):
         self.robot.load()
         self.table.load()
         self.kettle.load()
+        # set camera pos
+        self.camera.view_matrix.data.position, _ = self.robot.get_realsense_link_state()
 
     def _upload(self):
         self.robot.upload()
@@ -62,9 +64,9 @@ class IScene(IResource):
         self.plane.upload()
 
     def update_camera(self) -> None:
-        pos, orient = self.robot.get_camera_pos()
+        pos, angles = self.robot.get_realsense_link_state()
         self.camera.view_matrix.data.position = pos
-        self.camera.view_matrix.data.orient = orient
+        self.camera.view_matrix.data.angles = angles
         self.camera.view_matrix.update()
 
     def get_state(self):

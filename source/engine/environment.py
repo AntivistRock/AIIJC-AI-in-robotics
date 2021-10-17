@@ -31,6 +31,7 @@ class Environment (object):
                 state = self.scene.get_state()
                 action = self.agent.get_action(state)
                 self.scene.robot.action(action)
+                self.scene.robot.update()
                 # write history
                 history.add(History.Node(
                     action=action,

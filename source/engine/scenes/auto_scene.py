@@ -14,7 +14,7 @@ class AutoMoveAndGrepScene(IScene):
     def _update(self):
         if not self.is_gripped:
             if is_equal_arrs(self.robot.pos, self.kettle.get_handle_pos(), 0.2):
-                self.robot.grip(0.5)
+                # self.robot.grip(0.5)
                 self.is_gripped = True
             else:
                 self.robot.move([0.05, 0, 0])
@@ -23,8 +23,6 @@ class AutoMoveAndGrepScene(IScene):
                 self.robot.move([0, 0.05, 0])
             else:
                 return False
-
-        self.robot.update()
 
         return True
 

@@ -467,7 +467,7 @@
     <child link="wsg50_lip2_link"/>
     <origin   xyz="0 0 0"   rpy="0 0 0"  />
     <axis xyz="0 1 0"/>
-    <limit effort="30" lower="0" upper="0.055" velocity="50"/>
+    <limit effort="30" lower="0" upper="0.055" velocity="0.5"/>
   </joint>
 
   <link name="wsg50_finger2_link">

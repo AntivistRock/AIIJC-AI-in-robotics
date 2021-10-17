@@ -8,6 +8,7 @@ from time import sleep
 class Robot(engine.ILoader):
 
     def _load(self):
+
         self.pos = np.array([0.4, 0, 0.85])
         self.orient = [0, -np.pi / 2, 0]
 
@@ -15,18 +16,17 @@ class Robot(engine.ILoader):
             r"./source/ext/objects/robot/ur10-wsg50-realsense.urdf",
             basePosition=[0, 0, 0], useFixedBase=True)
 
-        robot_joint_info = [self.pb_client.getJointInfo(self.arm, i) for i in range(
-            self.pb_client.getNumJoints(self.arm))]
-
-        for current_joint_info in robot_joint_info:
-            print(f"Name: {current_joint_info[1]}; Number: {current_joint_info[0]}; Type {current_joint_info[2]}")
-
         self.end_effector_link_index = 8
-        self.realsense_camera_link_index = 16
+        self.realsense_camera_link_index = 17
 
         self.joint_info = [self.pb_client.getJointInfo(self.arm, i)
                            for i in range(self.pb_client.getNumJoints(self.arm))]
         self.joint_indices = [x[0] for x in self.joint_info if x[2] == self.pb_client.JOINT_REVOLUTE] + [9, 10]
+
+        for current_joint_info in self.joint_info:
+            print(f"Name: {current_joint_info[1]}; Number: {current_joint_info[0]}; Type {current_joint_info[2]}")
+
+
 
         self.update()
 
@@ -47,10 +47,11 @@ class Robot(engine.ILoader):
 
         sleep(1)
 
-    def get_camera_pos(self):
-        state = self.pb_client.getLinkState(self.arm, self.end_effector_link_index)
-        orient = self.pb_client.getEulerFromQuaternion(state[1])
-        return state[0], orient
+    def get_realsense_link_state(self):
+        state = self.pb_client.getLinkState(self.arm, self.realsense_camera_link_index)
+        pos = np.array(state[0])
+        angles = np.array(self.pb_client.getEulerFromQuaternion(state[1]))
+        return pos, angles
 
     def action(self, action):
         pass
