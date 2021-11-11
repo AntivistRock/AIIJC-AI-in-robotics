@@ -2,6 +2,7 @@ import source.engine as engine
 
 from source.utils import rotate
 
+import os
 import numpy as np
 
 
@@ -11,6 +12,9 @@ class Kettle(engine.ILoader):
 
         # y_pos = np.random.uniform(-0.5, 0.25)
         y_pos = 0
+
+        os.chdir(os.path.dirname(__file__))
+        print(f"Kittle: {os.getcwd()}")
 
         self.kettle = self.pb_client.loadURDF(
             r"./source/ext/objects/kettle/urdf/kettle.urdf",

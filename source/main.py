@@ -1,4 +1,4 @@
-from source.engine import EnvPool
+from source.engine import MultiprocessingEnvPool
 from source.model import Model
 
 import source.engine.scenes as scenes
@@ -7,8 +7,8 @@ import source.engine.scenes as scenes
 def main():
     model = Model(6)
 
-    pool = EnvPool(model, True)
-    pool.play(1, 100, scenes.AutoSceneCreator())
+    pool = MultiprocessingEnvPool(model, 5)
+    pool.play(scenes.AutoSceneCreator(), quantity=10, n_steps=10)
 
 
 if __name__ == "__main__":

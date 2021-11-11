@@ -8,6 +8,8 @@ from source.utils import add_timer
 
 import pybullet as pb
 
+import multiprocessing as mp
+
 
 class EnvPool(object):
     @add_timer
@@ -38,3 +40,33 @@ class EnvPool(object):
             self.environment.run(n_steps, history)
 
         return history
+
+
+def play_env_pool(inp):
+    model, env_pool, scene_creator, quantity, n_steps = inp
+    return env_pool.play(quantity, n_steps, scene_creator)
+
+
+class MultiprocessingEnvPool(object):
+
+    def __init__(self, model: Model, n_parallel):
+
+        self.pool = mp.Pool(processes=n_parallel)
+
+        self.model = model
+        self.n_parallel = n_parallel
+
+        self.env_pools = [EnvPool(self.model) for i in range(self.n_parallel)]
+
+    def __del__(self):
+        self.pool.close()
+        self.pool.join()
+
+    def play(self, scene_creator, quantity, n_steps):
+
+        quantity_alone = quantity // self.n_parallel
+        inp = [(self.model, self.env_pools[i], scene_creator, quantity_alone, n_steps)
+               for i in range(self.n_parallel)]
+
+        for history in self.pool.imap_unordered(play_env_pool, inp):
+            print(history)
